@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Ulangan Harian Mandiri</title>
+    <!-- Tailwind CSS for modern responsive design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for classroom icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti for student success celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+        }
+        /* Custom smooth scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Custom Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-grow flex items-center justify-center p-4">
+        <div class="w-full max-w-4xl bg-white shadow-xl rounded-2xl overflow-hidden border border-slate-200 min-h-[580px] flex flex-col justify-between">
+            
+            <!-- Header Section -->
+            <header class="bg-gradient-to-r from-teal-600 to-emerald-600 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 text-white">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white/20 p-2.5 rounded-xl">
+                        <i class="fa-solid fa-graduation-cap text-2xl text-white animate-bounce"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-black text-xl leading-tight tracking-wide">SD Negeri Blubuk</h1>
+                        <p class="text-xs text-teal-100 font-medium">Portal Ulangan Harian Mandiri</p>
+                    </div>
+                </div>
+                <!-- Navigation / Roles -->
+                <div class="flex items-center gap-2 text-sm">
+                    <button id="btn-portal-siswa" onclick="switchView('siswa-portal')" class="px-4 py-2 rounded-lg font-bold bg-white text-teal-700 transition duration-200 shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-user-graduate"></i> Portal Siswa
+                    </button>
+                    <button id="btn-portal-guru" onclick="openTeacherAuth()" class="px-4 py-2 rounded-lg font-bold text-teal-100 hover:text-white hover:bg-white/10 transition duration-200 flex items-center gap-2">
+                        <i class="fa-solid fa-user-tie"></i> Area Guru
+                    </button>
+                </div>
+            </header>
+
+            <!-- SECTION 1: SISWA PORTAL (CHOOSE NAME) -->
+            <section id="view-siswa-portal" class="app-view p-6 sm:p-10 flex-grow flex flex-col justify-center">
+                <div class="text-center max-w-xl mx-auto mb-8">
+                    <span class="bg-teal-50 text-teal-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border border-teal-100">Presensi Murid</span>
+                    <h2 class="text-2xl font-black text-slate-800 mt-2">Pilih Nama Kamu untuk Memulai</h2>
+                    <p class="text-sm text-slate-500 mt-1">Silakan cari nama lengkapmu pada daftar di bawah ini untuk melihat jadwal ulangan hari ini.</p>
+                </div>
+
+                <!-- Grid of 10 Students -->
+                <div id="student-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 max-w-3xl mx-auto w-full">
+                    <!-- Dynamic student buttons generated here -->
+                </div>
+            </section>
+
+            <!-- SECTION 1.5: CHOOSE ASSIGNED SUBJECT -->
+            <section id="view-siswa-pilih-mapel" class="app-view hidden p-6 sm:p-10 flex-grow flex flex-col justify-center">
+                <div class="text-center max-w-xl mx-auto mb-8">
+                    <button onclick="switchView('siswa-portal')" class="text-xs text-teal-600 hover:text-teal-700 font-bold mb-3 flex items-center gap-1 mx-auto bg-teal-50 px-3 py-1 rounded-full transition">
+                        <i class="fa-solid fa-arrow-left"></i> Ganti Nama Siswa
+                    </button>
+                    <h2 class="text-2xl font-black text-slate-800">Pilih Ulangan Hari Ini</h2>
+                    <p class="text-sm text-slate-500 mt-1">Halo <span id="pilih-mapel-student-name" class="font-bold text-teal-600">Siswa</span>, silakan pilih mata pelajaran yang ingin kamu kerjakan sekarang:</p>
+                </div>
+
+                <!-- Subjects List based on student access rights -->
+                <div id="subject-selection-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto w-full">
+                    <!-- Dynamic subjects listing -->
+                </div>
+            </section>
+
+            <!-- SECTION 2: ACTIVE EXAM SCREEN -->
+            <section id="view-siswa-quiz" class="app-view hidden p-6 sm:p-8 flex-grow flex flex-col justify-between">
+                <div>
+                    <!-- Quiz Progress Header -->
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
+                        <div>
+                            <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Nama Siswa</span>
+                            <h3 id="quiz-student-name" class="text-lg font-bold text-slate-800">Nama Siswa</h3>
+                            <span id="quiz-badge" class="inline-block bg-indigo-50 text-indigo-700 text-xs px-2.5 py-0.5 rounded-full font-bold mt-1">Ujian Aktif</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Progres Soal</span>
+                            <div class="text-lg font-bold text-slate-800"><span id="current-q-num">1</span>/<span id="total-q-num">5</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-slate-100 h-2 rounded-full mb-8 overflow-hidden">
+                        <div id="quiz-progress-bar" class="bg-teal-500 h-full w-0 transition-all duration-300"></div>
+                    </div>
+
+                    <!-- Question Card Container -->
+                    <div id="question-card" class="bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-6 transition-all duration-300">
+                        <p id="question-text" class="text-base sm:text-lg font-bold text-slate-800 mb-6 leading-relaxed">Loading Pertanyaan...</p>
+                        
+                        <!-- Answers Options list -->
+                        <div id="options-container" class="space-y-3">
+                            <!-- Options generated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Navigation inside Quiz -->
+                <div class="flex justify-between items-center border-t border-slate-100 pt-4 mt-6">
+                    <button id="btn-quiz-prev" onclick="prevQuestion()" class="px-4 py-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold transition flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i> Sebelumnya
+                    </button>
+                    <button id="btn-quiz-next" onclick="nextQuestion()" class="px-5 py-2.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-bold transition shadow-md flex items-center gap-2">
+                        Berikutnya <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- SECTION 3: EXAM SUBMISSION SUCCESS -->
+            <section id="view-siswa-success" class="app-view hidden p-8 flex-grow flex flex-col justify-center items-center text-center">
+                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-4xl mb-6 shadow-inner animate-bounce">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h2 class="text-2xl font-black text-slate-800">Hebat! Ulangan Selesai</h2>
+                <p class="text-slate-500 mt-2 max-w-md">Jawaban ulangan harian kamu sudah berhasil dikirim dan tersimpan di database guru secara aman.</p>
+                
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 my-6 w-full max-w-sm">
+                    <span class="text-xs text-slate-400 uppercase font-bold tracking-wide">Ringkasan Nilai</span>
+                    <div class="text-5xl font-black text-emerald-600 mt-2" id="success-score">00</div>
+                    <p class="text-xs text-slate-500 mt-2">Jawaban Benar: <span id="success-correct-count" class="font-bold text-slate-700">0</span> dari <span id="success-total-count" class="font-bold text-slate-700">5</span> Soal</p>
+                </div>
+
+                <button onclick="switchView('siswa-portal')" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-semibold transition shadow-md">
+                    Kembali ke Beranda Siswa
+                </button>
+            </section>
+
+            <!-- SECTION 4: GURU PASSWORD AUTHENTICATION -->
+            <section id="view-guru-auth" class="app-view hidden p-8 flex-grow flex flex-col justify-center items-center">
+                <div class="w-full max-w-sm bg-slate-50 p-8 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="text-center mb-6">
+                        <div class="w-12 h-12 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-xl mx-auto mb-3">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <h2 class="text-xl font-black text-slate-800">Verifikasi Guru</h2>
+                        <p class="text-xs text-slate-500 mt-1">Masukkan kata sandi guru untuk mengelola portal ulangan harian.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="input-guru-pw" class="block text-xs font-semibold text-slate-600 uppercase mb-2">Kata Sandi</label>
+                        <input type="password" id="input-guru-pw" placeholder="Masukkan kata sandi khusus guru" class="w-full p-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition text-sm">
+                    </div>
+
+                    <button onclick="submitTeacherAuth()" class="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition shadow-md">
+                        Masuk Dasbor
+                    </button>
+                </div>
+            </section>
+
+            <!-- SECTION 5: GURU DASHBOARD -->
+            <section id="view-guru-dashboard" class="app-view hidden p-6 flex-grow flex flex-col justify-between overflow-y-auto">
+                <div>
+                    <!-- Dashboard Tabs -->
+                    <div class="flex border-b border-slate-100 mb-6 gap-4 overflow-x-auto whitespace-nowrap pb-1">
+                        <button onclick="switchTeacherTab('tab-rekap')" id="tab-btn-rekap" class="tab-btn px-4 py-2 border-b-2 border-teal-600 font-bold text-teal-600 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line"></i> Rekap Nilai Siswa
+                        </button>
+                        <button onclick="switchTeacherTab('tab-siswa')" id="tab-btn-siswa" class="tab-btn px-4 py-2 border-b-2 border-transparent font-semibold text-slate-500 text-sm hover:text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-users"></i> Atur Hak Akses Mapel
+                        </button>
+                        <button onclick="switchTeacherTab('tab-soal')" id="tab-btn-soal" class="tab-btn px-4 py-2 border-b-2 border-transparent font-semibold text-slate-500 text-sm hover:text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-book-open"></i> Atur Bank Soal
+                        </button>
+                        <button onclick="switchTeacherTab('tab-config')" id="tab-btn-config" class="tab-btn px-4 py-2 border-b-2 border-transparent font-semibold text-slate-500 text-sm hover:text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-file-excel"></i> Integrasi Google Sheets
+                        </button>
+                    </div>
+
+                    <!-- TAB 1: REKAP NILAI -->
+                    <div id="tab-rekap" class="teacher-tab-content space-y-6">
+                        <div class="flex justify-between items-center flex-wrap gap-2">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800">Hasil Ulangan Siswa</h3>
+                                <p class="text-xs text-slate-500">Nilai terkirim akan tersimpan di database lokal browser & siap dikirim ke Google Sheets.</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="exportToCSV()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition flex items-center gap-1.5 border border-slate-200">
+                                    <i class="fa-solid fa-file-csv"></i> Unduh CSV/Excel
+                                </button>
+                                <button onclick="triggerSpreadsheetSync()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg transition flex items-center gap-1.5 shadow">
+                                    <i class="fa-solid fa-sync"></i> Paksa Kirim Semua Nilai
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="overflow-x-auto border border-slate-200 rounded-xl bg-slate-50">
+                            <table class="min-w-full divide-y divide-slate-200 text-sm text-left">
+                                <thead class="bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider">
+                                    <tr>
+                                        <th class="px-4 py-3">Waktu Selesai</th>
+                                        <th class="px-4 py-3">Nama Siswa</th>
+                                        <th class="px-4 py-3">Mata Pelajaran</th>
+                                        <th class="px-4 py-3 text-center">Benar</th>
+                                        <th class="px-4 py-3 text-center">Skor Akhir</th>
+                                        <th class="px-4 py-3 text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rekap-nilai-table-body" class="divide-y divide-slate-100 text-slate-700 bg-white">
+                                    <!-- Dynamic records here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: ATUR MAPEL SISWA -->
+                    <div id="tab-siswa" class="teacher-tab-content hidden space-y-6">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800">Atur Hak Akses & Tugas Ulangan 10 Siswa</h3>
+                            <p class="text-xs text-slate-500">Centang atau hilangkan centang untuk menentukan mapel apa saja yang boleh dibuka oleh masing-masing siswa.</p>
+                        </div>
+
+                        <!-- 10 Student Editor Grid -->
+                        <div id="student-editor-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- JS will generate 10 card editors here -->
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: ATUR BANK SOAL -->
+                    <div id="tab-soal" class="teacher-tab-content hidden space-y-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800">Manajemen Pertanyaan Ulangan (5 Soal per Mapel)</h3>
+                                <p class="text-xs text-slate-500">Ubah isi pertanyaan, opsi pilihan, dan kunci jawaban dari 6 mata pelajaran aktif.</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <select id="select-active-quiz-edit" onchange="loadQuestionsToEditor()" class="p-2 border border-slate-200 rounded-lg text-xs bg-white focus:outline-none focus:ring-1 focus:ring-teal-500">
+                                    <option value="pancasila">Pancasila</option>
+                                    <option value="indonesia">Bahasa Indonesia</option>
+                                    <option value="matematika">Matematika</option>
+                                    <option value="ipas">IPAS</option>
+                                    <option value="senirupa">Seni Rupa</option>
+                                    <option value="bahasajawa">Bahasa Jawa</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Question Editors Container -->
+                        <div id="question-editor-list" class="space-y-4">
+                            <!-- Dynamic question form blocks generated here -->
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: SINKRONISASI SPREADSHEET -->
+                    <div id="tab-config" class="teacher-tab-content hidden space-y-6">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800">Integrasi Cloud Google Spreadsheet</h3>
+                            <p class="text-xs text-slate-500">Konfigurasikan agar setiap kali siswa mengklik "Kirim", nilainya langsung muncul di baris baru file Google Spreadsheet Anda secara otomatis!</p>
+                        </div>
+
+                        <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-5 text-sm space-y-4">
+                            <h4 class="font-bold text-indigo-900 flex items-center gap-2"><i class="fa-solid fa-code-fork"></i> Langkah 1: Pasang Google Apps Script</h4>
+                            <ol class="list-decimal list-inside space-y-2 text-indigo-950 text-xs sm:text-sm">
+                                <li>Buat sebuah file <strong>Google Spreadsheet</strong> baru.</li>
+                                <li>Buka menu <strong>Ekstensi / Extensions</strong> di bagian atas menu bar, lalu pilih <strong>Apps Script</strong>.</li>
+                                <li>Hapus semua kode bawaan yang ada di editor tersebut.</li>
+                                <li>Salin dan tempelkan (copy-paste) seluruh kode script berikut ini ke dalam editor tersebut:</li>
+                            </ol>
+
+                            <!-- Copy Codebox -->
+                            <div class="relative bg-slate-900 text-slate-100 p-4 rounded-lg font-mono text-xs overflow-x-auto border border-slate-800 max-h-[250px] mt-2">
+                                <button onclick="copyAppsScriptCode()" class="absolute top-2 right-2 px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 rounded text-[10px] font-semibold text-slate-300 transition uppercase tracking-wider flex items-center gap-1">
+                                    <i class="fa-solid fa-copy"></i> Copy Script
+                                </button>
+                                <pre id="code-apps-script">
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    
+    // Tambah header jika sheet masih kosong
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(["Tanggal Pengiriman", "Nama Siswa", "Mata Pelajaran", "Skor", "Benar", "Salah", "Total Soal", "Detail Jawaban"]);
+      sheet.getRange(1, 1, 1, 8).setFontWeight("bold").setBackground("#e2e8f0");
+    }
+    
+    var formattedDate = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
+    var detailString = JSON.stringify(data.answers || {});
+    
+    sheet.appendRow([
+      formattedDate,
+      data.studentName,
+      data.quizTitle,
+      data.score,
+      data.correct,
+      data.wrong,
+      data.totalQuestions,
+      detailString
+    ]);
+    
+    return ContentService.createTextOutput(JSON.stringify({ "status": "success", "message": "Nilai berhasil disimpan" }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ "status": "error", "message": error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}</pre>
+                            </div>
+
+                            <h4 class="font-bold text-indigo-900 flex items-center gap-2 pt-2"><i class="fa-solid fa-cloud-arrow-up"></i> Langkah 2: Deploy & Publikasikan Script</h4>
+                            <ol class="list-decimal list-inside space-y-2 text-indigo-950 text-xs sm:text-sm">
+                                <li>Klik tombol <strong>Deploy (Terapkan)</strong> -> <strong>New deployment (Penerapan baru)</strong>.</li>
+                                <li>Klik ikon gerigi di sebelah "Select type", pilih <strong>Web app (Aplikasi web)</strong>.</li>
+                                <li>Atur opsinya:
+                                    <ul class="list-disc list-inside ml-6 mt-1 space-y-1 text-xs text-indigo-900">
+                                        <li>Execute as: <strong>Me (email Anda sendiri)</strong></li>
+                                        <li>Who has access: <strong>Anyone (Siapa saja)</strong> (Pilihan krusial agar web diijinkan memasukkan baris baru).</li>
+                                    </ul>
+                                </li>
+                                <li>Klik <strong>Deploy</strong>, lalu ketuk <strong>Izinkan Akses / Grant Access</strong> dan setujui langkah keamanan sampai selesai.</li>
+                                <li>Salin alamat tautan **URL Aplikasi Web** yang tampil di akhir layar.</li>
+                            </ol>
+
+                            <h4 class="font-bold text-indigo-900 flex items-center gap-2 pt-2"><i class="fa-solid fa-link"></i> Langkah 3: Hubungkan Web ini ke Google Sheets</h4>
+                            <p class="text-indigo-950 text-xs sm:text-sm">Masukkan tautan URL Web App yang telah disalin di atas pada input di bawah ini:</p>
+                            
+                            <div class="flex flex-col sm:flex-row gap-2 mt-2">
+                                <input type="text" id="input-sheets-webhook" placeholder="https://script.google.com/macros/s/..." class="flex-grow p-3 rounded-xl border border-indigo-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white">
+                                <button onclick="saveGoogleSheetsWebhook()" class="px-5 py-3 bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold rounded-xl transition shadow">
+                                    Simpan Tautan Spreadsheet
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Teacher Dashboard -->
+                <div class="flex justify-between items-center border-t border-slate-100 pt-4 mt-8 text-xs text-slate-400">
+                    <p>Status Sinkronisasi: <span id="sync-status" class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> Sistem Siap</span></p>
+                    <button onclick="exitTeacherMode()" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-lg transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-door-open"></i> Keluar Dasbor
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- FOOTER OF THE PAGE -->
+    <footer class="text-center py-4 text-xs text-slate-400 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row justify-center items-center gap-2">
+        <p>&copy; 2026 SD Negeri Blubuk. Sangat Ringan & Ramah Kuota.</p>
+        <span class="hidden sm:inline">&bull;</span>
+        <p class="text-teal-600 font-bold hover:underline cursor-pointer" onclick="openTeacherAuth()">Kelola Sistem (Area Guru)</p>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC SECTION -->
+    <script>
+        const APP_STATE_KEY = "ulangan_harian_v2_state";
+
+        // Predefined 5 simple multiple-choice questions per subject as requested
+        const DEFAULT_QUIZZES = {
+            pancasila: {
+                title: "Pancasila",
+                icon: "fa-solid fa-landmark",
+                questions: [
+                    { id: 1, text: "Wilayah administratif pemerintahan di bawah tingkat provinsi yang dipimpin oleh seorang Bupati dinamakan...", options: ["Kabupaten", "Kota", "Kecamatan", "Kelurahan"], answer: "Kabupaten" },
+                    { id: 2, text: "Negara Kesatuan Republik Indonesia (NKRI) dibagi atas beberapa daerah besar yang masing-masing dipimpin oleh Gubernur, yaitu...", options: ["Kecamatan", "Provinsi", "Kabupaten", "Kota Madya"], answer: "Provinsi" },
+                    { id: 3, text: "Wilayah kabupaten/kota sebenarnya merupakan bagian tidak terpisahkan dari wilayah...", options: ["Negara tetangga", "Provinsi sebagai bagian dari NKRI", "Benua Asia saja", "Hutan adat lokal"], answer: "Provinsi sebagai bagian dari NKRI" },
+                    { id: 4, text: "Pimpinan daerah tertinggi yang memegang tanggung jawab kepemimpinan di tingkat Kota adalah...", options: ["Bupati", "Lurah", "Camat", "Wali Kota"], answer: "Wali Kota" },
+                    { id: 5, text: "Mengapa kita harus bangga dan menjaga persatuan wilayah tempat tinggal kita dari tingkat terkecil hingga provinsi?", options: ["Sebab wilayah kita adalah bagian mutlak NKRI", "Sebab wilayah kita paling hebat sendiri", "Agar bisa memusuhi daerah lain", "Agar mendapat hadiah uang tunai"], answer: "Sebab wilayah kita adalah bagian mutlak NKRI" }
+                ]
+            },
+            indonesia: {
+                title: "Bahasa Indonesia",
+                icon: "fa-solid fa-book",
+                questions: [
+                    { id: 1, text: "Manakah di bawah ini yang merupakan contoh kalimat kompleks (kalimat majemuk bertingkat)?", options: ["Ibu memasak nasi goreng di dapur pagi ini.", "Adik sedang bermain boneka barbie.", "Andi giat menulis cerpen ketika seisi rumah sedang tidur pulas.", "Budi dan Rudi pergi memancing ikan di sungai dekat rumah."], answer: "Andi giat menulis cerpen ketika seisi rumah sedang tidur pulas." },
+                    { id: 2, text: "Di dalam draf cerpen, kata yang bermakna 'denotatif' artinya adalah kata yang memiliki...", options: ["Makna kiasan atau tidak langsung", "Makna lugas atau makna kamus yang sebenarnya", "Makna berlawanan dengan realitas", "Makna rahasia yang tidak boleh ditulis"], answer: "Makna lugas atau makna kamus yang sebenarnya" },
+                    { id: 3, text: "Perhatikan kalimat: 'Citra adalah bunga desa yang sangat ramah.' Kata 'bunga desa' dalam kutipan cerpen tersebut bermakna...", options: ["Konotatif (bermakna gadis tercantik)", "Denotatif (bermakna tanaman hias di desa)", "Asli (bermakna tumbuhan liar)", "Negatif (bermakna anak pemalas)"], answer: "Konotatif (bermakna gadis tercantik)" },
+                    { id: 4, text: "Teks cerita pendek (cerpen) biasanya dikembangkan dari kerangka tulisan berdasarkan susunan...", options: ["Tema, tokoh, latar, alur, dan amanat", "Harga barang belanjaan harian", "Daftar hadir absensi siswa sekolah", "Cara membuat kue tradisional"], answer: "Tema, tokoh, latar, alur, dan amanat" },
+                    { id: 5, text: "Manakah kalimat di bawah ini yang menggunakan kata bermakna denotatif (makna sebenarnya)?", options: ["Toko roti itu gulung tikar akibat sepi pembeli.", "Adik menyiram bunga mawar merah yang mekar di pot halaman rumah.", "Dia dikenal sebagai anak berkepala batu di kelasnya.", "Siswa tersebut mencari muka di hadapan bapak guru baru."], answer: "Adik menyiram bunga mawar merah yang mekar di pot halaman rumah." }
+                ]
+            },
+            matematika: {
+                title: "Matematika",
+                icon: "fa-solid fa-calculator",
+                questions: [
+                    { id: 1, text: "Pada sistem berpetak (koordinat), jika kolom menggunakan huruf (A, B, C...) dan baris menggunakan angka (1, 2, 3...). Di manakah letak titik sekolah jika ia berada pada kolom C baris ke-4?", options: ["A4", "B3", "C4", "D1"], answer: "C4" },
+                    { id: 2, text: "Pada koordinat Kartesius (x, y), sumbu mendatar (horizontal) dinamakan sumbu x, sedangkan sumbu tegak (vertikal) dinamakan...", options: ["Sumbu y", "Sumbu z", "Sumbu miring", "Sumbu putar"], answer: "Sumbu y" },
+                    { id: 3, text: "Sebuah peta berpetak menunjukkan koordinat Rumah Budi berada di (2, 3). Berapakah arti dari angka koordinat tersebut?", options: ["2 satuan ke atas dan 3 satuan ke kiri", "2 satuan ke kanan dan 3 satuan ke atas", "3 satuan ke kanan dan 2 satuan ke atas", "Langsung lompat ke angka 5"], answer: "2 satuan ke kanan dan 3 satuan ke atas" },
+                    { id: 4, text: "Di sebuah peta berpetak, Masjid terletak di (4, 5) sedangkan Puskesmas terletak di (4, 2). Berapakah satuan jarak terdekat antara Masjid dan Puskesmas?", options: ["2 satuan berpetak", "3 satuan berpetak", "4 satuan berpetak", "7 satuan berpetak"], answer: "3 satuan berpetak" },
+                    { id: 5, text: "Jika titik (0,0) adalah Pos Ronda, dan Rumah Ahmad berada di koordinat (5, 1). Bagaimanakah cara melangkah dari Pos Ronda menuju Rumah Ahmad?", options: ["5 langkah ke kanan, 1 langkah ke atas", "1 langkah ke kanan, 5 langkah ke atas", "5 langkah ke kiri saja", "Diam di tempat saja tanpa melangkah"], answer: "5 langkah ke kanan, 1 langkah ke atas" }
+                ]
+            },
+            ipas: {
+                title: "IPAS",
+                icon: "fa-solid fa-flask",
+                questions: [
+                    { id: 1, text: "Kegiatan ekonomi masyarakat sekitar yang menghasilkan barang atau jasa baru guna memenuhi kebutuhan hidup disebut...", options: ["Konsumsi", "Distribusi", "Produksi", "Investasi"], answer: "Produksi" },
+                    { id: 2, text: "Pak Dimas menanam padi di sawah, memanennya, lalu menjual berasnya ke pasar. Kegiatan ekonomi yang dilakukan Pak Dimas tergolong sebagai kegiatan...", options: ["Konsumsi", "Produksi", "Distribusi", "Promosi"], answer: "Produksi" },
+                    { id: 3, text: "Kegiatan menyalurkan barang-barang kebutuhan pokok dari petani atau pabrik pembuat langsung menuju ke warung retail dinamakan...", options: ["Produksi", "Konsumsi", "Distribusi", "Urbanisasi"], answer: "Distribusi" },
+                    { id: 4, text: "Manakah contoh tindakan kegiatan konsumsi di lingkungan masyarakat sekitar rumah kita sehari-hari?", options: ["Membeli buku tulis di koperasi sekolah untuk belajar", "Menjahit baju pesanan tetangga sebelah", "Mengantar susu sapi segar ke agen besar", "Membuat adonan kue untuk dijual kembali"], answer: "Membeli buku tulis di koperasi sekolah untuk belajar" },
+                    { id: 5, text: "Sebagian masyarakat pesisir bekerja menangkap ikan, mengolahnya menjadi ikan asin, lalu mendistribusikannya ke pegunungan. Kegiatan ini membuktikan...", options: ["Kegiatan ekonomi dipengaruhi oleh keadaan alam sekitar", "Penduduk gunung tidak menyukai ikan asin", "Ikan asin dilarang dimakan oleh nelayan", "Pekerjaan semua orang di bumi harus seragam"], answer: "Kegiatan ekonomi dipengaruhi oleh keadaan alam sekitar" }
+                ]
+            },
+            senirupa: {
+                title: "Seni Rupa",
+                icon: "fa-solid fa-palette",
+                questions: [
+                    { id: 1, text: "Karya seni rupa dua dimensi yang dibuat dengan tujuan menceritakan kembali hobi bermain sepak bola atau kegiatan menggambar kita disebut karya...", options: ["Ilustrasi Pengalaman Pribadi", "Patung abstrak kuno", "Seni arsitektur jembatan", "Ukiran kayu dinding Jepara"], answer: "Ilustrasi Pengalaman Pribadi" },
+                    { id: 2, text: "Unsur fisik seni rupa yang paling dasar dan digunakan sebagai awal pembuatan garis atau bidang gambar adalah...", options: ["Warna tersier", "Titik atau bintik", "Ruang hampa", "Tekstur kasar"], answer: "Titik atau bintik" },
+                    { id: 3, text: "Jika kamu ingin menggambar pengalaman gembira saat berlibur di pantai yang cerah, pilihan warna apa yang paling mencerminkan emosi ceria tersebut?", options: ["Warna gelap gulita (hitam & kelabu)", "Warna cerah dan hangat (kuning, oranye, merah muda)", "Warna pucat keputih-putihan", "Tanpa warna sama sekali"], answer: "Warna cerah dan hangat (kuning, oranye, merah muda)" },
+                    { id: 4, text: "Media gambar basah yang diaplikasikan menggunakan bantuan kuas lukis di atas kanvas atau kertas tebal adalah...", options: ["Pensil warna kering", "Krayon minyak keras", "Cat air atau cat poster", "Kapur tulis sekolah"], answer: "Cat air atau cat poster" },
+                    { id: 5, text: "Membuat bentuk replika hewan peliharaan kesayangan kita menggunakan bahan tanah liat atau plastisin merupakan bentuk seni rupa...", options: ["Dua dimensi saja", "Tiga dimensi", "Satu dimensi", "Seni suara digital"], answer: "Tiga dimensi" }
+                ]
+            },
+            bahasajawa: {
+                title: "Bahasa Jawa",
+                icon: "fa-solid fa-feather",
+                questions: [
+                    { id: 1, text: "Bapak nembe kemawon ... saking kantor amargi padamelanipun sampun rampung. Tembung ingkang leres miturut unggah-ungguh yaiku...", options: ["mulih", "mangkat", "kondur", "lunga"], answer: "kondur" },
+                    { id: 2, text: "Unen-unen saemper paribasan kang rukun agawe santosa, nanging yen crah agawe...", options: ["bubrah", "senang", "mulya", "rekasa"], answer: "bubrah" },
+                    { id: 3, text: "Tembang macapat iku cacahe ana 11, salah siji sing nggambarake uripe manungsa nalika isih ana ing kandhutan yaiku tembang...", options: ["Mijil", "Maskumambang", "Sinom", "Pucung"], answer: "Maskumambang" },
+                    { id: 4, text: "Aksara Jawa 'Ha' utawa 'Na' yen diwenehi sandhangan 'wulu' unine dadi...", options: ["Hi / Ni", "He / Ne", "Hu / Nu", "Ho / No"], answer: "Hi / Ni" },
+                    { id: 5, text: "Simbah lagi ... jamu beras kencur supaya awake seger lan waras.", options: ["mangan", "ngunjuk", "nguntal", "nyiduk"], answer: "ngunjuk" }
+                ]
+            }
+        };
+
+        // Complete 10 original students configured specifically with their assigned subjects
+        const DEFAULT_STUDENTS = [
+            { id: 1, name: "CITRA KANAYA PUJI RAHAYU", allowedQuizzes: ["pancasila", "indonesia", "matematika", "ipas"] },
+            { id: 2, name: "DIMAS AKMAL AZZAM", allowedQuizzes: ["indonesia", "matematika", "ipas", "senirupa"] },
+            { id: 3, name: "FARKHAN MAKMUN", allowedQuizzes: ["pancasila", "indonesia", "matematika", "ipas", "senirupa", "bahasajawa"] }, // Semua
+            { id: 4, name: "KHAIRUN NISA", allowedQuizzes: ["indonesia", "matematika", "ipas", "bahasajawa"] },
+            { id: 5, name: "LATIFAH NURUL RIZQI NADZUA", allowedQuizzes: ["pancasila", "indonesia", "matematika", "ipas", "senirupa", "bahasajawa"] }, // Semua
+            { id: 6, name: "MUHAMAD IHSAN ALFARIZQI", allowedQuizzes: ["indonesia", "matematika", "ipas"] },
+            { id: 7, name: "MUHAMMAD IQBAL RAMADHAN", allowedQuizzes: ["indonesia", "ipas", "bahasajawa"] },
+            { id: 8, name: "NARENDRA APRILIO RAHMAD SAPUTRA AL MUTAQIN", allowedQuizzes: ["indonesia", "matematika", "bahasajawa"] },
+            { id: 9, name: "NAUFAL NUR AMIN", allowedQuizzes: ["pancasila", "indonesia", "matematika", "ipas", "senirupa", "bahasajawa"] }, // Semua
+            { id: 10, name: "YUMNA SHEPTI ANGGRAINI", allowedQuizzes: ["pancasila", "indonesia", "matematika", "ipas", "bahasajawa"] }
+        ];
+
+        let appState = {
+            students: [...DEFAULT_STUDENTS],
+            quizzes: { ...DEFAULT_QUIZZES },
+            results: [],
+            sheetsWebhook: "",
+            teacherPassword: "guru123"
+        };
+
+        // State handlers with recovery
+        function loadState() {
+            try {
+                const stored = localStorage.getItem(APP_STATE_KEY);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    
+                    // Merge cleanly while maintaining structures
+                    if (parsed.students) appState.students = parsed.students;
+                    if (parsed.quizzes) appState.quizzes = parsed.quizzes;
+                    if (parsed.results) appState.results = parsed.results;
+                    if (parsed.sheetsWebhook !== undefined) appState.sheetsWebhook = parsed.sheetsWebhook;
+                    if (parsed.teacherPassword) appState.teacherPassword = parsed.teacherPassword;
+                } else {
+                    saveStateToLocalStorage();
+                }
+            } catch (err) {
+                console.error("Gagal memuat penyimpanan lokal:", err);
+            }
+        }
+
+        function saveStateToLocalStorage() {
+            try {
+                localStorage.setItem(APP_STATE_KEY, JSON.stringify(appState));
+            } catch (err) {
+                console.error("Gagal menyimpan ke penyimpanan lokal:", err);
+            }
+        }
+
+        // Active Student and Quiz Session tracking parameters
+        let activeStudent = null;
+        let activeQuizCode = "";
+        let activeQuizQuestions = [];
+        let activeQuizTitle = "";
+        let currentQuestionIndex = 0;
+        let studentAnswers = {}; 
+
+        // Central DOM Views
+        const views = {
+            'siswa-portal': document.getElementById('view-siswa-portal'),
+            'siswa-pilih-mapel': document.getElementById('view-siswa-pilih-mapel'),
+            'siswa-quiz': document.getElementById('view-siswa-quiz'),
+            'siswa-success': document.getElementById('view-siswa-success'),
+            'guru-auth': document.getElementById('view-guru-auth'),
+            'guru-dashboard': document.getElementById('view-guru-dashboard')
+        };
+
+        // Dynamic View switcher
+        function switchView(viewName) {
+            Object.values(views).forEach(el => el.classList.add('hidden'));
+            if (views[viewName]) {
+                views[viewName].classList.remove('hidden');
+            }
+
+            const btnSiswa = document.getElementById('btn-portal-siswa');
+            const btnGuru = document.getElementById('btn-portal-guru');
+
+            if (viewName.startsWith('siswa-')) {
+                btnSiswa.className = "px-4 py-2 rounded-lg font-bold bg-white text-teal-700 transition duration-200 shadow-sm flex items-center gap-2";
+                btnGuru.className = "px-4 py-2 rounded-lg font-bold text-teal-100 hover:text-white hover:bg-white/10 transition duration-200 flex items-center gap-2";
+            } else {
+                btnSiswa.className = "px-4 py-2 rounded-lg font-bold text-teal-100 hover:text-white hover:bg-white/10 transition duration-200 flex items-center gap-2";
+                btnGuru.className = "px-4 py-2 rounded-lg font-bold bg-white text-teal-700 transition duration-200 shadow-sm flex items-center gap-2";
+            }
+        }
+
+        // Beautiful internal toast messages
+        function showToast(message, type = "info") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bgColor = "bg-slate-800";
+            let icon = '<i class="fa-solid fa-info-circle text-teal-400"></i>';
+            if (type === "success") {
+                bgColor = "bg-emerald-600";
+                icon = '<i class="fa-solid fa-circle-check text-white"></i>';
+            } else if (type === "error") {
+                bgColor = "bg-rose-600";
+                icon = '<i class="fa-solid fa-triangle-exclamation text-white"></i>';
+            } else if (type === "warning") {
+                bgColor = "bg-amber-600";
+                icon = '<i class="fa-solid fa-circle-exclamation text-white"></i>';
+            }
+
+            toast.className = `${bgColor} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 transition-all duration-300 transform translate-y-2 opacity-0 text-sm font-semibold pointer-events-auto max-w-sm border border-white/10`;
+            toast.innerHTML = `
+                <div class="text-base flex-shrink-0">${icon}</div>
+                <div class="flex-grow">${message}</div>
+                <button class="text-white/70 hover:text-white transition" onclick="this.parentElement.remove()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => { toast.remove(); }, 300);
+            }, 4000);
+        }
+
+        function renderStudentGrid() {
+            const container = document.getElementById('student-grid');
+            container.innerHTML = '';
+
+            appState.students.forEach((student, index) => {
+                const totalMapel = student.allowedQuizzes ? student.allowedQuizzes.length : 0;
+
+                const card = document.createElement('button');
+                card.className = "bg-white border border-slate-200 hover:border-teal-500 hover:shadow-md hover:bg-teal-50/10 p-4 rounded-xl text-center transition flex flex-col justify-between items-center h-[145px] shadow-sm group";
+                card.onclick = () => selectStudent(student);
+                
+                card.innerHTML = `
+                    <div class="w-10 h-10 bg-teal-50 text-teal-600 group-hover:bg-teal-100 group-hover:scale-105 rounded-full flex items-center justify-center text-xs font-black transition">
+                        ${index + 1}
+                    </div>
+                    <div class="mt-2 w-full">
+                        <h4 class="font-bold text-slate-800 text-xs truncate w-full" title="${student.name}">${student.name}</h4>
+                        <span class="inline-block text-[10px] text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full mt-1.5 font-bold">
+                            ${totalMapel} Pilihan Mapel
+                        </span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Student selected, open customized allowed subjects screen
+        function selectStudent(student) {
+            activeStudent = student;
+            document.getElementById('pilih-mapel-student-name').innerText = student.name;
+
+            // Render subjects assigned to this student
+            const container = document.getElementById('subject-selection-container');
+            container.innerHTML = '';
+
+            if (!student.allowedQuizzes || student.allowedQuizzes.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full bg-amber-50 text-amber-700 p-4 rounded-xl text-center text-xs font-semibold border border-amber-200">
+                        Maaf, guru belum menetapkan tugas ulangan untuk kamu hari ini. Silakan hubungi Guru Anda ya!
+                    </div>
+                `;
+            } else {
+                student.allowedQuizzes.forEach(quizCode => {
+                    const quiz = appState.quizzes[quizCode];
+                    if (quiz) {
+                        const btn = document.createElement('button');
+                        btn.className = "bg-white border border-slate-200 hover:border-teal-500 hover:shadow-md p-4 rounded-xl flex items-center gap-3 transition text-left shadow-sm group";
+                        btn.onclick = () => selectQuiz(quizCode, quiz);
+                        
+                        btn.innerHTML = `
+                            <div class="p-3 bg-teal-50 text-teal-600 rounded-lg group-hover:bg-teal-500 group-hover:text-white transition">
+                                <i class="${quiz.icon || 'fa-solid fa-book-open'} text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">${quiz.title}</h4>
+                                <p class="text-[10px] text-slate-400">5 Pertanyaan Pilihan Ganda</p>
+                            </div>
+                        `;
+                        container.appendChild(btn);
+                    }
+                });
+            }
+
+            switchView('siswa-pilih-mapel');
+        }
+
+        function selectQuiz(quizCode, quiz) {
+            if (!quiz.questions || quiz.questions.length === 0) {
+                showToast("Daftar pertanyaan untuk mapel ini sedang kosong.", "warning");
+                return;
+            }
+
+            activeQuizCode = quizCode;
+            activeQuizQuestions = quiz.questions;
+            activeQuizTitle = quiz.title;
+            currentQuestionIndex = 0;
+            studentAnswers = {}; // Reset answers
+
+            document.getElementById('quiz-student-name').innerText = activeStudent.name;
+            document.getElementById('total-q-num').innerText = activeQuizQuestions.length;
+            document.getElementById('quiz-badge').innerText = `Ulangan ${activeQuizTitle}`;
+
+            renderQuestion();
+            switchView('siswa-quiz');
+            showToast(`Mulai mengerjakan ulangan ${activeQuizTitle}. Selamat berjuang!`, "success");
+        }
+
+        function renderQuestion() {
+            if (activeQuizQuestions.length === 0) return;
+
+            const q = activeQuizQuestions[currentQuestionIndex];
+            
+            document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
+            const percentage = ((currentQuestionIndex + 1) / activeQuizQuestions.length) * 100;
+            document.getElementById('quiz-progress-bar').style.width = `${percentage}%`;
+
+            document.getElementById('question-text').innerText = `${currentQuestionIndex + 1}. ${q.text}`;
+
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const isSelected = studentAnswers[currentQuestionIndex] === opt;
+                
+                const btn = document.createElement('button');
+                btn.className = `w-full p-4 rounded-xl text-left border font-semibold transition flex items-center justify-between text-xs sm:text-sm ${
+                    isSelected 
+                    ? 'bg-teal-50 border-teal-500 text-teal-800 shadow-sm ring-1 ring-teal-500' 
+                    : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700'
+                }`;
+                btn.onclick = () => { studentAnswers[currentQuestionIndex] = opt; renderQuestion(); };
+                btn.innerHTML = `
+                    <span class="flex items-center gap-3">
+                        <span class="font-bold text-slate-400">${String.fromCharCode(65 + idx)}.</span>
+                        <span>${opt}</span>
+                    </span>
+                    <span class="w-5 h-5 rounded-full border flex items-center justify-center text-[10px] ${
+                        isSelected ? 'bg-teal-500 text-white border-teal-500' : 'border-slate-300 bg-white'
+                    }">
+                        ${isSelected ? '<i class="fa-solid fa-check"></i>' : ''}
+                    </span>
+                `;
+                optContainer.appendChild(btn);
+            });
+
+            // Navigation configuration
+            const nextBtn = document.getElementById('btn-quiz-next');
+            const prevBtn = document.getElementById('btn-quiz-prev');
+
+            prevBtn.disabled = currentQuestionIndex === 0;
+            prevBtn.className = `px-4 py-2 rounded-lg border font-semibold transition flex items-center gap-2 ${
+                currentQuestionIndex === 0 ? 'border-slate-100 text-slate-300 bg-white cursor-not-allowed' : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+            }`;
+
+            if (currentQuestionIndex === activeQuizQuestions.length - 1) {
+                nextBtn.innerHTML = `Kirim Jawaban <i class="fa-solid fa-paper-plane"></i>`;
+                nextBtn.className = "px-6 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition shadow-md flex items-center gap-2 animate-pulse";
+            } else {
+                nextBtn.innerHTML = `Berikutnya <i class="fa-solid fa-arrow-right"></i>`;
+                nextBtn.className = "px-5 py-2.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-bold transition shadow-md flex items-center gap-2";
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (studentAnswers[currentQuestionIndex] === undefined) {
+                showToast("Pilih salah satu jawaban terlebih dahulu!", "warning");
+                return;
+            }
+
+            if (currentQuestionIndex < activeQuizQuestions.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                showSubmitConfirmModal();
+            }
+        }
+
+        function showSubmitConfirmModal() {
+            const overlay = document.createElement('div');
+            overlay.className = "fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50";
+            
+            const card = document.createElement('div');
+            card.className = "bg-white p-6 rounded-2xl shadow-xl border border-slate-200 max-w-sm w-full text-center";
+            card.innerHTML = `
+                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl mx-auto mb-4">
+                    <i class="fa-solid fa-paper-plane animate-pulse"></i>
+                </div>
+                <h3 class="font-black text-lg text-slate-800">Apakah Kamu Sudah Yakin?</h3>
+                <p class="text-xs text-slate-500 mt-1">Pastikan kembali seluruh pertanyaan sudah dijawab dengan teliti sebelum mengirimkan nilai ke bapak/ibu guru.</p>
+                <div class="flex gap-2 mt-6">
+                    <button id="modal-cancel" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition text-sm">Periksa Lagi</button>
+                    <button id="modal-confirm" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition text-sm shadow-md">Ya, Kirim!</button>
+                </div>
+            `;
+            overlay.appendChild(card);
+            document.body.appendChild(overlay);
+
+            card.querySelector('#modal-cancel').onclick = () => overlay.remove();
+            card.querySelector('#modal-confirm').onclick = () => {
+                overlay.remove();
+                submitQuiz();
+            };
+        }
+
+        async function submitQuiz() {
+            let correctCount = 0;
+            activeQuizQuestions.forEach((q, index) => {
+                if (studentAnswers[index] === q.answer) {
+                    correctCount++;
+                }
+            });
+
+            const total = activeQuizQuestions.length;
+            const wrongCount = total - correctCount;
+            const finalScore = Math.round((correctCount / total) * 100);
+
+            const record = {
+                timestamp: new Date().toISOString(),
+                studentName: activeStudent.name,
+                quizTitle: activeQuizTitle,
+                score: finalScore,
+                correct: correctCount,
+                wrong: wrongCount,
+                totalQuestions: total,
+                answers: studentAnswers
+            };
+
+            appState.results.unshift(record);
+            saveStateToLocalStorage();
+
+            if (appState.sheetsWebhook) {
+                showToast("Sedang mengirimkan nilai secara aman ke Google Spreadsheet...", "info");
+                try {
+                    await fetch(appState.sheetsWebhook, {
+                        method: 'POST',
+                        mode: 'no-cors', 
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(record)
+                    });
+                    showToast("Nilai berhasil terkirim & tercatat di Google Spreadsheet!", "success");
+                } catch (error) {
+                    console.error(error);
+                    showToast("Koneksi gagal ke Spreadsheet. Nilai tetap tersimpan lokal di database guru.", "warning");
+                }
+            }
+
+            document.getElementById('success-score').innerText = finalScore;
+            document.getElementById('success-correct-count').innerText = correctCount;
+            document.getElementById('success-total-count').innerText = total;
+
+            switchView('siswa-success');
+            
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function openTeacherAuth() {
+            switchView('guru-auth');
+            document.getElementById('input-guru-pw').value = '';
+            document.getElementById('input-guru-pw').focus();
+        }
+
+        function submitTeacherAuth() {
+            const input = document.getElementById('input-guru-pw').value;
+            if (input === appState.teacherPassword) {
+                showToast("Sandi Benar! Selamat datang bapak/ibu guru.", "success");
+                renderTeacherDashboard();
+                switchView('guru-dashboard');
+            } else {
+                showToast("Sandi Salah! Gunakan sandi guru bawaan.", "error");
+            }
+        }
+
+        function exitTeacherMode() {
+            switchView('siswa-portal');
+        }
+
+        function renderTeacherDashboard() {
+            renderResultsTable();
+            renderStudentEditor();
+            loadQuestionsToEditor();
+            document.getElementById('input-sheets-webhook').value = appState.sheetsWebhook || "";
+        }
+
+        function switchTeacherTab(tabId) {
+            document.querySelectorAll('.teacher-tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-4 py-2 border-b-2 border-transparent font-semibold text-slate-500 text-sm hover:text-slate-800 flex items-center gap-2";
+            });
+
+            const activeBtnMap = {
+                'tab-rekap': 'tab-btn-rekap',
+                'tab-siswa': 'tab-btn-siswa',
+                'tab-soal': 'tab-btn-soal',
+                'tab-config': 'tab-btn-config'
+            };
+
+            const activeBtn = document.getElementById(activeBtnMap[tabId]);
+            if (activeBtn) {
+                activeBtn.className = "tab-btn px-4 py-2 border-b-2 border-teal-600 font-bold text-teal-600 text-sm flex items-center gap-2";
+            }
+        }
+
+        function renderResultsTable() {
+            const tbody = document.getElementById('rekap-nilai-table-body');
+            tbody.innerHTML = '';
+
+            if (appState.results.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-4 py-8 text-center text-slate-400">
+                            <i class="fa-solid fa-inbox text-2xl mb-2 block text-slate-300"></i>
+                            Belum ada hasil ulangan siswa yang dikirimkan.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            appState.results.forEach((res, index) => {
+                const date = new Date(res.timestamp).toLocaleString('id-ID', {
+                    dateStyle: 'short',
+                    timeStyle: 'short'
+                });
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="px-4 py-3 text-xs text-slate-500 font-mono">${date}</td>
+                    <td class="px-4 py-3 font-semibold text-slate-800 text-xs sm:text-sm">${res.studentName}</td>
+                    <td class="px-4 py-3 text-xs"><span class="bg-teal-50 text-teal-700 px-2.5 py-1 rounded-full font-bold">${res.quizTitle}</span></td>
+                    <td class="px-4 py-3 text-center text-slate-500 font-bold">${res.correct}/${res.totalQuestions}</td>
+                    <td class="px-4 py-3 text-center"><span class="font-black text-sm ${res.score >= 70 ? 'text-emerald-600' : 'text-rose-600'}">${res.score}</span></td>
+                    <td class="px-4 py-3 text-center">
+                        <button onclick="deleteRecord(${index})" class="text-rose-500 hover:text-rose-700 p-1 rounded-lg hover:bg-rose-50 transition text-xs font-bold" title="Hapus Permanen">
+                            <i class="fa-solid fa-trash"></i> Hapus
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function deleteRecord(index) {
+            const overlay = document.createElement('div');
+            overlay.className = "fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50";
+            
+            const card = document.createElement('div');
+            card.className = "bg-white p-6 rounded-2xl shadow-xl border border-slate-200 max-w-sm w-full text-center";
+            card.innerHTML = `
+                <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center text-xl mx-auto mb-4">
+                    <i class="fa-solid fa-trash-can animate-pulse"></i>
+                </div>
+                <h3 class="font-black text-lg text-slate-800">Hapus Rekap Nilai?</h3>
+                <p class="text-xs text-slate-500 mt-1">Data nilai yang dihapus dari dasbor internal ini tidak bisa dikembalikan.</p>
+                <div class="flex gap-2 mt-6">
+                    <button id="del-cancel" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition text-sm">Kembali</button>
+                    <button id="del-confirm" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold transition text-sm shadow-md">Hapus Permanen</button>
+                </div>
+            `;
+            overlay.appendChild(card);
+            document.body.appendChild(overlay);
+
+            card.querySelector('#del-cancel').onclick = () => overlay.remove();
+            card.querySelector('#del-confirm').onclick = () => {
+                overlay.remove();
+                appState.results.splice(index, 1);
+                saveStateToLocalStorage();
+                renderResultsTable();
+                showToast("Rekap nilai berhasil dihapus.", "success");
+            };
+        }
+
+        function renderStudentEditor() {
+            const container = document.getElementById('student-editor-container');
+            container.innerHTML = '';
+
+            const availableCodes = Object.keys(appState.quizzes);
+
+            appState.students.forEach((student) => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-xl border border-slate-200 flex flex-col gap-3 hover:shadow-sm transition";
+                
+                // Construct multi-selection check options for assigned subjects
+                let checkboxes = '';
+                availableCodes.forEach(code => {
+                    const isChecked = student.allowedQuizzes.includes(code);
+                    checkboxes += `
+                        <label class="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer bg-slate-50 hover:bg-teal-50 px-2 py-1 rounded-lg border border-slate-100 transition">
+                            <input type="checkbox" value="${code}" ${isChecked ? 'checked' : ''} onchange="toggleStudentQuiz(${student.id}, '${code}', this.checked)" class="w-3.5 h-3.5 rounded text-teal-600 focus:ring-teal-500">
+                            <span class="capitalize font-medium">${appState.quizzes[code].title}</span>
+                        </label>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <span class="text-xs font-bold text-slate-400">Siswa #${student.id}</span>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 uppercase font-black">Nama Lengkap Murid</label>
+                        <input type="text" value="${student.name}" onchange="updateStudentName(${student.id}, this.value)" class="w-full p-2 border-b border-slate-200 focus:border-teal-500 focus:outline-none text-xs sm:text-sm font-bold text-slate-800 bg-transparent transition">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 uppercase font-black mb-2">Daftar Hak Akses Ulangan</label>
+                        <div class="flex flex-wrap gap-1.5">
+                            ${checkboxes}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function toggleStudentQuiz(id, quizCode, isChecked) {
+            const student = appState.students.find(s => s.id === id);
+            if (student) {
+                if (isChecked) {
+                    if (!student.allowedQuizzes.includes(quizCode)) {
+                        student.allowedQuizzes.push(quizCode);
+                    }
+                } else {
+                    student.allowedQuizzes = student.allowedQuizzes.filter(c => c !== quizCode);
+                }
+                saveStateToLocalStorage();
+                renderStudentGrid(); // Keep grid layout synced
+                showToast(`Hak akses ${appState.quizzes[quizCode].title} milik ${student.name} berhasil diperbarui.`, "success");
+            }
+        }
+
+        function updateStudentName(id, newName) {
+            const clean = newName.trim();
+            if (!clean) {
+                showToast("Nama murid tidak boleh kosong!", "error");
+                renderStudentEditor();
+                return;
+            }
+
+            const student = appState.students.find(s => s.id === id);
+            if (student) {
+                student.name = clean;
+                saveStateToLocalStorage();
+                renderStudentGrid();
+                showToast("Nama murid berhasil diperbarui.", "success");
+            }
+        }
+
+        function loadQuestionsToEditor() {
+            const quizCode = document.getElementById('select-active-quiz-edit').value;
+            const quiz = appState.quizzes[quizCode];
+            const listContainer = document.getElementById('question-editor-list');
+            listContainer.innerHTML = '';
+
+            if (!quiz || !quiz.questions) return;
+
+            quiz.questions.forEach((q, qIndex) => {
+                const qCard = document.createElement('div');
+                qCard.className = "bg-white border border-slate-200 p-5 rounded-xl space-y-4 shadow-sm relative hover:border-slate-300 transition";
+                
+                let optionsInputs = '';
+                q.options.forEach((opt, optIndex) => {
+                    optionsInputs += `
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-400 w-5">${String.fromCharCode(65 + optIndex)}.</span>
+                            <input type="text" value="${opt}" onchange="updateQuestionOption('${quizCode}', ${qIndex}, ${optIndex}, this.value)" class="flex-grow p-2 border border-slate-200 rounded-lg text-xs text-slate-700 bg-transparent focus:outline-none focus:ring-1 focus:ring-teal-500">
+                            <input type="radio" name="correct-radio-${quizCode}-${qIndex}" value="${opt}" ${q.answer === opt ? 'checked' : ''} onchange="setQuestionCorrectAnswer('${quizCode}', ${qIndex}, this.value)" class="w-4 h-4 text-teal-600 focus:ring-teal-500" title="Kunci Jawaban">
+                        </div>
+                    `;
+                });
+
+                qCard.innerHTML = `
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                        <span class="text-xs font-bold text-teal-600 uppercase">Pertanyaan #${qIndex + 1}</span>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 font-bold uppercase mb-1">Teks Pertanyaan</label>
+                        <textarea onchange="updateQuestionText('${quizCode}', ${qIndex}, this.value)" rows="2" class="w-full p-2.5 border border-slate-200 rounded-lg text-xs sm:text-sm text-slate-800 bg-transparent focus:outline-none focus:ring-1 focus:ring-teal-500 leading-relaxed font-bold">${q.text}</textarea>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                        ${optionsInputs}
+                    </div>
+                `;
+                listContainer.appendChild(qCard);
+            });
+        }
+
+        function updateQuestionText(quizCode, qIndex, val) {
+            const text = val.trim();
+            if (!text) {
+                showToast("Teks pertanyaan tidak boleh kosong!", "error");
+                return;
+            }
+            appState.quizzes[quizCode].questions[qIndex].text = text;
+            saveStateToLocalStorage();
+            showToast("Teks pertanyaan berhasil disimpan.", "success");
+        }
+
+        function updateQuestionOption(quizCode, qIndex, optIndex, val) {
+            const optionVal = val.trim();
+            if (!optionVal) {
+                showToast("Opsi jawaban tidak boleh kosong!", "error");
+                return;
+            }
+
+            const oldVal = appState.quizzes[quizCode].questions[qIndex].options[optIndex];
+            appState.quizzes[quizCode].questions[qIndex].options[optIndex] = optionVal;
+
+            if (appState.quizzes[quizCode].questions[qIndex].answer === oldVal) {
+                appState.quizzes[quizCode].questions[qIndex].answer = optionVal;
+            }
+
+            saveStateToLocalStorage();
+            loadQuestionsToEditor();
+            showToast("Opsi jawaban berhasil diperbarui.", "success");
+        }
+
+        function setQuestionCorrectAnswer(quizCode, qIndex, val) {
+            appState.quizzes[quizCode].questions[qIndex].answer = val;
+            saveStateToLocalStorage();
+            showToast("Kunci jawaban berhasil ditetapkan.", "success");
+        }
+
+        function saveGoogleSheetsWebhook() {
+            const val = document.getElementById('input-sheets-webhook').value.trim();
+            
+            if (val !== "" && !val.startsWith("https://script.google.com/")) {
+                showToast("Masukkan URL Google Apps Script yang valid!", "error");
+                return;
+            }
+
+            appState.sheetsWebhook = val;
+            saveStateToLocalStorage();
+
+            if (val === "") {
+                showToast("Integrasi Google Sheets dinonaktifkan.", "warning");
+            } else {
+                showToast("Koneksi Google Sheets berhasil disimpan & aktif!", "success");
+            }
+        }
+
+        function copyAppsScriptCode() {
+            const code = document.getElementById('code-apps-script').innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = code;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            showToast("Kode Google Apps Script berhasil disalin ke clipboard!", "success");
+        }
+
+        async function triggerSpreadsheetSync() {
+            if (!appState.sheetsWebhook) {
+                showToast("Tautkan URL Apps Script di tab Integrasi terlebih dahulu!", "warning");
+                return;
+            }
+
+            if (appState.results.length === 0) {
+                showToast("Tidak ada data rekap untuk disinkronkan.", "warning");
+                return;
+            }
+
+            showToast("Sedang menyinkronkan data...", "info");
+            let count = 0;
+
+            for (const res of appState.results) {
+                try {
+                    await fetch(appState.sheetsWebhook, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(res)
+                    });
+                    count++;
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+            showToast(`Sinkronisasi sukses! ${count} baris nilai dikirim ke Google Sheets.`, "success");
+        }
+
+        function exportToCSV() {
+            if (appState.results.length === 0) {
+                showToast("Belum ada data nilai untuk diekspor.", "warning");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Waktu Selesai,Nama Siswa,Mata Pelajaran,Skor,Benar,Total Soal\n";
+
+            appState.results.forEach(res => {
+                const date = new Date(res.timestamp).toLocaleString('id-ID');
+                const row = `"${date}","${res.studentName}","${res.quizTitle}",${res.score},${res.correct},${res.totalQuestions}`;
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Rekap_Nilai_SD_Negeri_Blubuk_${new Date().toISOString().substring(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("File CSV/Excel berhasil diunduh!", "success");
+        }
+
+        // Initialize application configurations on load
+        window.onload = function() {
+            loadState();
+            renderStudentGrid();
+            switchView('siswa-portal');
+        };
+    </script>
+</body>
+</html>
