@@ -74,7 +74,7 @@
                 </div>
 
                 <!-- Grid of 10 Students -->
-                <div id="student-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 gap-3 max-w-3xl mx-auto w-full">
+                <div id="student-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-3 max-w-3xl mx-auto w-full">
                     <!-- Dynamic student buttons generated here -->
                 </div>
             </section>
@@ -393,6 +393,27 @@ function doGet(e) {
         const APP_STATE_KEY = "ulangan_harian_v2_state";
         const DEFAULT_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbw2RE4mzngSyYwFSCHYnQoNFrG8KILcbELGEavEVR8YW47UmlRm4PgQsHxmU1mknTQu/exec";
 
+        // Chrome-Proof Storage Guard: Automatically falls back to system memory if Chrome blocks localStorage
+        const SafeStorage = {
+            memoryStore: {},
+            getItem(key) {
+                try {
+                    return localStorage.getItem(key);
+                } catch (e) {
+                    console.warn("Storage Guard Active: localStorage is blocked by Chrome security. Using memory store.");
+                    return this.memoryStore[key] || null;
+                }
+            },
+            setItem(key, value) {
+                try {
+                    localStorage.setItem(key, value);
+                } catch (e) {
+                    console.warn("Storage Guard Active: Cannot write to localStorage. Saving to temporary memory.");
+                    this.memoryStore[key] = value;
+                }
+            }
+        };
+
         // Predefined multiple-choice questions for each of the 6 subjects
         const DEFAULT_QUIZZES = {
             pancasila: {
@@ -488,8 +509,8 @@ function doGet(e) {
         let studentAnswers = {}; // To store temporary quiz answers
 
         window.onload = function() {
-            // Load state from localStorage or use defaults
-            const savedState = localStorage.getItem(APP_STATE_KEY);
+            // Load state using Chrome-Proof storage guard
+            const savedState = SafeStorage.getItem(APP_STATE_KEY);
             if (savedState) {
                 try {
                     const parsed = JSON.parse(savedState);
@@ -498,7 +519,7 @@ function doGet(e) {
                     rekapNilai = parsed.rekapNilai || [];
                     googleSheetsWebhook = parsed.googleSheetsWebhook || DEFAULT_WEBHOOK_URL;
                 } catch (e) {
-                    console.error("Failed to load local state", e);
+                    console.error("Failed to load local state. Bootstrapping defaults.", e);
                     loadDefaultState();
                 }
             } else {
@@ -525,7 +546,7 @@ function doGet(e) {
 
         function saveStateToLocalStorage() {
             const payload = { students, quizzes, rekapNilai, googleSheetsWebhook };
-            localStorage.setItem(APP_STATE_KEY, JSON.stringify(payload));
+            SafeStorage.setItem(APP_STATE_KEY, JSON.stringify(payload));
         }
 
         // CUSTOM TOAST NOTIFICATIONS (Replaces browser alerts)
@@ -788,7 +809,7 @@ function doGet(e) {
                 sentStatus: "Mencoba Mengirim..."
             };
 
-            // Write to local cache rekapitulasi first
+            // Write to cache using SafeStorage
             rekapNilai.push(newRecord);
             saveStateToLocalStorage();
             renderRekapNilaiTable();
@@ -860,7 +881,7 @@ function doGet(e) {
 
         function submitTeacherAuth() {
             const inputPw = document.getElementById("input-guru-pw").value;
-            // The password is kept as 'guru123' as previously requested by the system internally, but never displayed in UI
+            // Password 'guru123' stays behind-the-scenes
             if (inputPw === "guru123") {
                 showToast("Akses diizinkan! Selamat datang, guru.", "success");
                 switchView("guru-dashboard");
