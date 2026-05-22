@@ -61,20 +61,46 @@
                 <div class="text-center max-w-xl mx-auto mb-8">
                     <span class="bg-teal-50 text-teal-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border border-teal-100">Daftar Hadir Siswa</span>
                     <h2 class="text-2xl font-black text-slate-800 mt-2">Pilih Nama Kamu untuk Memulai</h2>
-                    <p class="text-sm text-slate-500 mt-1">Cari nama lengkapmu pada daftar di bawah ini untuk melihat mata pelajaran ujian kamu hari ini.</p>
+                    <p class="text-sm text-slate-500 mt-1">Cari nama lengkapmu pada daftar di bawah ini untuk memulai verifikasi akun ulangan.</p>
                 </div>
 
                 <div id="student-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-3 max-w-3xl mx-auto w-full">
                     </div>
             </section>
 
+            <section id="view-siswa-auth" class="app-view hidden p-8 flex-grow flex flex-col justify-center items-center">
+                <div class="w-full max-w-sm bg-slate-50 p-8 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="text-center mb-6">
+                        <div class="w-12 h-12 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-xl mx-auto mb-3">
+                            <i class="fa-solid fa-key"></i>
+                        </div>
+                        <h2 class="text-xl font-black text-slate-800">Masuk Akun Siswa</h2>
+                        <p class="text-xs text-slate-500 mt-1">Halo <span id="auth-student-display-name" class="font-bold text-teal-600">Siswa</span>, silakan masukkan kata sandi unik kamu.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="input-siswa-pw" class="block text-xs font-semibold text-slate-600 uppercase mb-2">Kata Sandi Siswa</label>
+                        <input type="password" id="input-siswa-pw" placeholder="Masukkan kata sandi akunmu" class="w-full p-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition text-sm bg-white">
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button onclick="switchView('siswa-portal')" class="w-1/3 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl transition text-sm">
+                            Batal
+                        </button>
+                        <button onclick="submitStudentAuth()" class="w-2/3 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition shadow-md text-sm">
+                            Verifikasi Masuk
+                        </button>
+                    </div>
+                </div>
+            </section>
+
             <section id="view-siswa-pilih-mapel" class="app-view hidden p-6 sm:p-10 flex-grow flex flex-col justify-center">
                 <div class="text-center max-w-xl mx-auto mb-8">
                     <button onclick="switchView('siswa-portal')" class="text-xs text-teal-600 hover:text-teal-700 font-bold mb-3 flex items-center gap-1 mx-auto bg-teal-50 px-3 py-1 rounded-full transition">
-                        <i class="fa-solid fa-arrow-left"></i> Ganti Nama Siswa
+                        <i class="fa-solid fa-arrow-left"></i> Keluar Akun Siswa
                     </button>
                     <h2 class="text-2xl font-black text-slate-800">Pilih Ulangan Hari Ini</h2>
-                    <p class="text-sm text-slate-500 mt-1">Halo <span id="pilih-mapel-student-name" class="font-bold text-teal-600">Siswa</span>, silakan pilih mata pelajaran yang ingin kamu kerjakan sekarang:</p>
+                    <p class="text-sm text-slate-500 mt-1">Selamat datang <span id="pilih-mapel-student-name" class="font-bold text-teal-600">Siswa</span>, silakan pilih mata pelajaran yang ingin kamu kerjakan sekarang:</p>
                 </div>
 
                 <div id="subject-selection-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto w-full">
@@ -147,7 +173,7 @@
 
                     <div class="mb-4">
                         <label for="input-guru-pw" class="block text-xs font-semibold text-slate-600 uppercase mb-2">Kata Sandi</label>
-                        <input type="password" id="input-guru-pw" placeholder="Masukkan kata sandi guru" class="w-full p-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition text-sm">
+                        <input type="password" id="input-guru-pw" placeholder="Masukkan kata sandi guru" class="w-full p-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition text-sm bg-white">
                     </div>
 
                     <button onclick="submitTeacherAuth()" class="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition shadow-md">
@@ -227,7 +253,7 @@
                                 <p class="text-xs text-slate-500">Ubah isi pertanyaan, opsi pilihan, dan kunci jawaban dari 6 mata pelajaran aktif.</p>
                             </div>
                             <div class="flex gap-2">
-                                <select id="select-active-quiz-edit" onchange="loadQuestionsToEditor()" class="p-2 border border-slate-200 rounded-lg text-xs bg-white focus:outline-none focus:ring-1 focus:ring-teal-500 bg-white">
+                                <select id="select-active-quiz-edit" onchange="loadQuestionsToEditor()" class="p-2 border border-slate-200 rounded-lg text-xs bg-white focus:outline-none focus:ring-1 focus:ring-teal-500">
                                     <option value="pancasila">Pancasila</option>
                                     <option value="indonesia">Bahasa Indonesia</option>
                                     <option value="matematika">Matematika</option>
@@ -351,32 +377,21 @@ function doGet(e) {
     </footer>
 
     <script>
-        // SINKRONISASI UPDATE SOAL: Mengganti kunci versi menjadi v4_revised agar browser langsung mereset cache soal lama
-        const APP_STATE_KEY = "ulangan_harian_v4_revised";
+        // SINKRONISASI SECURITY VERSION: Mengganti kunci versi menjadi v5_secured agar database lokal siswa tereset otomatis membawa password
+        const APP_STATE_KEY = "ulangan_harian_v5_secured";
         const DEFAULT_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbw2RE4mzngSyYwFSCHYnQoNFrG8KILcbELGEavEVR8YW47UmlRm4PgQsHxmU1mknTQu/exec";
 
-        // Chrome-Proof Storage Guard
         const SafeStorage = {
             memoryStore: {},
             getItem(key) {
-                try {
-                    return localStorage.getItem(key);
-                } catch (e) {
-                    console.warn("Storage Guard Active: Using memory store.");
-                    return this.memoryStore[key] || null;
-                }
+                try { return localStorage.getItem(key); } catch (e) { return this.memoryStore[key] || null; }
             },
             setItem(key, value) {
-                try {
-                    localStorage.setItem(key, value);
-                } catch (e) {
-                    console.warn("Storage Guard Active: Saving to temporary memory.");
-                    this.memoryStore[key] = value;
-                }
+                try { localStorage.setItem(key, value); } catch (e) { this.memoryStore[key] = value; }
             }
         };
 
-        // Bank Soal dengan revisi Pancasila, Bahasa Indonesia, & Bahasa Jawa
+        // Bank Soal Terintegrasi
         const DEFAULT_QUIZZES = {
             pancasila: {
                 title: "Pancasila",
@@ -446,17 +461,18 @@ function doGet(e) {
             }
         };
 
+        // Daftar 10 Akun Siswa Lengkap dengan Kata Sandi Rahasianya
         const DEFAULT_STUDENTS = [
-            { id: 1, name: "CITRA KANAYA PUJI RAHAYU", subjects: ["pancasila", "indonesia", "matematika", "ipas", "senirupa", "bahasajawa"] },
-            { id: 2, name: "DIMAS AKMAL AZZAM", subjects: ["pancasila", "indonesia", "matematika", "ipas", "senirupa", "bahasajawa"] },
-            { id: 3, name: "FARKHAN MAKMUN", subjects: ["pancasila", "indonesia", "matematika", "ipas", "senirupa", "bahasajawa"] },
-            { id: 4, name: "KHAIRUN NISA", subjects: ["indonesia", "matematika", "ipas", "bahasajawa"] },
-            { id: 5, name: "LATIFAH NURUL RIZQI NADZUA", subjects: ["pancasila", "indonesia", "matematika", "ipas", "senirupa", "bahasajawa"] },
-            { id: 6, name: "MUHAMAD IHSAN ALFARIZQI", subjects: ["indonesia", "matematika", "ipas"] },
-            { id: 7, name: "MUHAMMAD IQBAL RAMADHAN", subjects: ["indonesia", "ipas", "bahasajawa"] },
-            { id: 8, name: "NARENDRA APRILIO RAHMAD SAPUTRA AL MUTAQIN", subjects: ["indonesia", "matematika", "bahasajawa"] },
-            { id: 9, name: "NAUFAL NUR AMIN", subjects: ["pancasila", "indonesia", "matematika", "ipas", "senirupa", "bahasajawa"] },
-            { id: 10, name: "YUMNA SHEPTI ANGGRAINI", subjects: ["pancasila", "indonesia", "matematika", "ipas", "bahasajawa"] }
+            { id: 1, name: "CITRA KANAYA PUJI RAHAYU", password: "C1traK01", subjects: ["pancasila", "indonesia", "matematika", "ipas", "senirupa", "bahasajawa"] },
+            { id: 2, name: "DIMAS AKMAL AZZAM", password: "Dim4sA01", subjects: ["pancasila", "indonesia", "matematika", "ipas", "senirupa", "bahasajawa"] },
+            { id: 3, name: "FARKHAN MAKMUN", password: "Farkh4n01", subjects: ["pancasila", "indonesia", "matematika", "ipas", "senirupa", "bahasajawa"] },
+            { id: 4, name: "KHAIRUN NISA", password: "Kha1run01", subjects: ["indonesia", "matematika", "ipas", "bahasajawa"] },
+            { id: 5, name: "LATIFAH NURUL RIZQI NADZUA", password: "L4tifah01", subjects: ["pancasila", "indonesia", "matematika", "ipas", "senirupa", "bahasajawa"] },
+            { id: 6, name: "MUHAMAD IHSAN ALFARIZQI", password: "Ihsanalf401", subjects: ["indonesia", "matematika", "ipas"] },
+            { id: 7, name: "MUHAMMAD IQBAL RAMADHAN", password: "Iqb4lR01", subjects: ["indonesia", "ipas", "bahasajawa"] },
+            { id: 8, name: "NARENDRA APRILIO RAHMAD SAPUTRA AL MUTAQIN", password: "Aprili01", subjects: ["indonesia", "matematika", "bahasajawa"] },
+            { id: 9, name: "NAUFAL NUR AMIN", password: "Nauf4l01", subjects: ["pancasila", "indonesia", "matematika", "ipas", "senirupa", "bahasajawa"] },
+            { id: 10, name: "YUMNA SHEPTI ANGGRAINI", password: "YumnaS01", subjects: ["pancasila", "indonesia", "matematika", "ipas", "bahasajawa"] }
         ];
 
         let students = [];
@@ -464,6 +480,7 @@ function doGet(e) {
         let rekapNilai = [];
         let googleSheetsWebhook = "";
         let activeStudent = null;
+        let selectedStudentForAuth = null;
         let activeQuizKey = "";
         let currentQuestionIndex = 0;
         let studentAnswers = {};
@@ -478,7 +495,6 @@ function doGet(e) {
                     rekapNilai = parsed.rekapNilai || [];
                     googleSheetsWebhook = parsed.googleSheetsWebhook || DEFAULT_WEBHOOK_URL;
                 } catch (e) {
-                    console.error("Gagal memuat local state. Bootstrapping defaults.", e);
                     loadDefaultState();
                 }
             } else {
@@ -490,7 +506,7 @@ function doGet(e) {
             try {
                 const webhookInput = document.getElementById("input-sheets-webhook");
                 if (webhookInput) webhookInput.value = googleSheetsWebhook;
-            } catch (err) { console.log(err); }
+            } catch (err) {}
 
             renderStudentSelectionGrid();
             renderRekapNilaiTable();
@@ -498,9 +514,7 @@ function doGet(e) {
             try {
                 renderStudentEditorList();
                 loadQuestionsToEditor();
-            } catch(err) {
-                console.warn("Chrome deferred side elements rendering", err);
-            }
+            } catch(err) {}
         };
 
         function loadDefaultState() {
@@ -557,7 +571,7 @@ function doGet(e) {
 
             students.forEach((student, index) => {
                 const btn = document.createElement("button");
-                btn.onclick = () => selectStudent(student.id);
+                btn.onclick = () => triggerStudentAuthGate(student.id);
                 btn.className = "p-3 bg-slate-50 hover:bg-teal-50 hover:border-teal-400 border border-slate-200 rounded-xl text-left font-semibold text-slate-700 transition flex items-center gap-3 text-xs sm:text-sm shadow-sm hover:shadow active:scale-[0.98]";
                 
                 btn.innerHTML = `
@@ -566,19 +580,38 @@ function doGet(e) {
                     </div>
                     <div class="truncate pr-1">
                         <p class="font-extrabold truncate text-slate-800 leading-none">${student.name}</p>
-                        <p class="text-[10px] text-slate-400 font-medium mt-1 leading-none">${student.subjects.length} Mapel Aktif</p>
+                        <p class="text-[10px] text-slate-400 font-medium mt-1 leading-none"><i class="fa-solid fa-lock text-[9px]"></i> Memerlukan Sandi Akun</p>
                     </div>
                 `;
                 grid.appendChild(btn);
             });
         }
 
-        function selectStudent(studentId) {
-            activeStudent = students.find(s => s.id === studentId);
-            if (!activeStudent) return;
+        function triggerStudentAuthGate(studentId) {
+            selectedStudentForAuth = students.find(s => s.id === studentId);
+            if (!selectedStudentForAuth) return;
 
+            document.getElementById("auth-student-display-name").innerText = selectedStudentForAuth.name;
+            document.getElementById("input-siswa-pw").value = "";
+            switchView("siswa-auth");
+            document.getElementById("input-siswa-pw").focus();
+        }
+
+        function submitStudentAuth() {
+            const inputPw = document.getElementById("input-siswa-pw").value.trim();
+            if (!selectedStudentForAuth) return;
+
+            if (inputPw === selectedStudentForAuth.password) {
+                activeStudent = selectedStudentForAuth;
+                showToast(`Selamat datang ${activeStudent.name}!`, "success");
+                enterStudentDashboard();
+            } else {
+                showToast("Kata sandi akun salah! Periksa kembali kartu sandimu.", "error");
+            }
+        }
+
+        function enterStudentDashboard() {
             document.getElementById("pilih-mapel-student-name").innerText = activeStudent.name;
-            
             const container = document.getElementById("subject-selection-container");
             if (!container) return;
             container.innerHTML = "";
@@ -652,16 +685,12 @@ function doGet(e) {
                 const optionBtn = document.createElement("button");
                 optionBtn.onclick = () => selectOption(q.id, option);
                 optionBtn.className = `w-full text-left p-4 rounded-xl border font-medium text-xs sm:text-sm transition flex items-center gap-3 active:scale-[0.99] ${
-                    isSelected 
-                    ? "bg-teal-50 text-teal-800 border-teal-500 font-bold shadow-sm" 
-                    : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                    isSelected ? "bg-teal-50 text-teal-800 border-teal-500 font-bold shadow-sm" : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
                 }`;
 
                 optionBtn.innerHTML = `
                     <div class="w-5 h-5 rounded-full flex items-center justify-center border text-[10px] font-bold ${
-                        isSelected 
-                        ? "bg-teal-600 border-teal-600 text-white" 
-                        : "border-slate-300 text-slate-400 bg-white"
+                        isSelected ? "bg-teal-600 border-teal-600 text-white" : "border-slate-300 text-slate-400 bg-white"
                     }">
                         ${isSelected ? '<i class="fa-solid fa-check"></i>' : ''}
                     </div>
@@ -682,7 +711,7 @@ function doGet(e) {
             }
 
             if (index === quiz.questions.length - 1) {
-                btnNext.innerHTML = `Kirim Ulangan <i class="fa-solid fa-paper-plane animate-pulse"></i>`;
+                btnNext.innerHTML = `Kirim Ulangan <i class="fa-solid fa-paper-plane"></i>`;
                 btnNext.className = "px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition shadow-md flex items-center gap-2 animate-bounce";
             } else {
                 btnNext.innerHTML = `Berikutnya <i class="fa-solid fa-arrow-right"></i>`;
@@ -763,9 +792,7 @@ function doGet(e) {
             
             switchView("siswa-success");
 
-            try {
-                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-            } catch(err) { console.log("Confetti trigger bypassed"); }
+            try { confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } }); } catch(err) {}
 
             deployToSpreadsheet(newRecord);
         }
@@ -787,7 +814,6 @@ function doGet(e) {
                 showToast("Hasil ulangan berhasil dikirim ke Google Spreadsheet!", "success");
             })
             .catch(error => {
-                console.error("Transmission Error", error);
                 updateLastRecordStatus("Gagal Kirim");
                 showToast("Ujian tersimpan lokal. Gagal menyambung ke Spreadsheet.", "error");
             });
@@ -941,7 +967,6 @@ function doGet(e) {
             })
             .catch(err => {
                 if (icon) icon.className = "fa-solid fa-cloud-arrow-down";
-                console.error("Pull Failed", err);
                 showToast("Koneksi gagal. Cek status deployment web app.", "error");
             });
         }
@@ -1002,9 +1027,11 @@ function doGet(e) {
                 });
 
                 card.innerHTML = `
-                    <div class="border-b border-slate-200 pb-2">
-                        <h4 class="font-bold text-slate-800 text-sm leading-tight">${student.name}</h4>
-                        <p class="text-[10px] text-slate-400 font-medium mt-1 uppercase">Daftar Penugasan Ujian</p>
+                    <div class="border-b border-slate-200 pb-2 flex justify-between items-start">
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm leading-tight">${student.name}</h4>
+                            <p class="text-[10px] text-slate-400 font-medium mt-1 uppercase">Sandi: <span class="font-mono text-teal-600 font-bold">${student.password}</span></p>
+                        </div>
                     </div>
                     <div class="grid grid-cols-2 gap-1 bg-slate-100 p-2 rounded-lg">
                         ${checkBoxesHtml}
