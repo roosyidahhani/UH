@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Ulangan Harian Mandiri - SD Negeri Blubuk</title>
-    <!-- Tailwind CSS for modern responsive design -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Inter Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- FontAwesome for classroom icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Canvas Confetti for student success celebration -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         body {
@@ -36,14 +32,11 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-    <!-- Custom Toast Notification Container -->
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
 
-    <!-- MAIN APP CONTAINER -->
     <main class="flex-grow flex items-center justify-center p-4">
         <div class="w-full max-w-4xl bg-white shadow-xl rounded-2xl overflow-hidden border border-slate-200 min-h-[580px] flex flex-col justify-between">
             
-            <!-- Header Section -->
             <header class="bg-gradient-to-r from-teal-600 to-emerald-600 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 text-white">
                 <div class="flex items-center gap-3">
                     <div class="bg-white/20 p-2.5 rounded-xl">
@@ -54,7 +47,6 @@
                         <p class="text-xs text-teal-100 font-medium">Portal Ulangan Harian Mandiri</p>
                     </div>
                 </div>
-                <!-- Navigation / Roles -->
                 <div class="flex items-center gap-2 text-sm">
                     <button id="btn-portal-siswa" onclick="switchView('siswa-portal')" class="px-4 py-2 rounded-lg font-bold bg-white text-teal-700 transition duration-200 shadow-sm flex items-center gap-2">
                         <i class="fa-solid fa-user-graduate"></i> Portal Siswa
@@ -65,7 +57,6 @@
                 </div>
             </header>
 
-            <!-- SECTION 1: SISWA PORTAL (CHOOSE NAME) -->
             <section id="view-siswa-portal" class="app-view p-6 sm:p-10 flex-grow flex flex-col justify-center">
                 <div class="text-center max-w-xl mx-auto mb-8">
                     <span class="bg-teal-50 text-teal-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border border-teal-100">Daftar Hadir Siswa</span>
@@ -73,13 +64,10 @@
                     <p class="text-sm text-slate-500 mt-1">Cari nama lengkapmu pada daftar di bawah ini untuk melihat mata pelajaran ujian kamu hari ini.</p>
                 </div>
 
-                <!-- Grid of 10 Students -->
                 <div id="student-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-3 max-w-3xl mx-auto w-full">
-                    <!-- Dynamic student buttons generated here -->
-                </div>
+                    </div>
             </section>
 
-            <!-- SECTION 1.5: CHOOSE ASSIGNED SUBJECT -->
             <section id="view-siswa-pilih-mapel" class="app-view hidden p-6 sm:p-10 flex-grow flex flex-col justify-center">
                 <div class="text-center max-w-xl mx-auto mb-8">
                     <button onclick="switchView('siswa-portal')" class="text-xs text-teal-600 hover:text-teal-700 font-bold mb-3 flex items-center gap-1 mx-auto bg-teal-50 px-3 py-1 rounded-full transition">
@@ -89,16 +77,12 @@
                     <p class="text-sm text-slate-500 mt-1">Halo <span id="pilih-mapel-student-name" class="font-bold text-teal-600">Siswa</span>, silakan pilih mata pelajaran yang ingin kamu kerjakan sekarang:</p>
                 </div>
 
-                <!-- Subjects List based on student access rights -->
                 <div id="subject-selection-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto w-full">
-                    <!-- Dynamic subjects listing -->
-                </div>
+                    </div>
             </section>
 
-            <!-- SECTION 2: ACTIVE EXAM SCREEN -->
             <section id="view-siswa-quiz" class="app-view hidden p-6 sm:p-8 flex-grow flex flex-col justify-between">
                 <div>
-                    <!-- Quiz Progress Header -->
                     <div class="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
                         <div>
                             <span class="text-xs text-slate-400 uppercase font-bold tracking-wider">Nama Siswa</span>
@@ -111,23 +95,18 @@
                         </div>
                     </div>
 
-                    <!-- Progress Bar -->
                     <div class="w-full bg-slate-100 h-2 rounded-full mb-8 overflow-hidden">
                         <div id="quiz-progress-bar" class="bg-teal-500 h-full w-0 transition-all duration-300"></div>
                     </div>
 
-                    <!-- Question Card Container -->
                     <div id="question-card" class="bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-6 transition-all duration-300">
                         <p id="question-text" class="text-base sm:text-lg font-bold text-slate-800 mb-6 leading-relaxed">Loading Pertanyaan...</p>
                         
-                        <!-- Answers Options list -->
                         <div id="options-container" class="space-y-3">
-                            <!-- Options generated dynamically -->
-                        </div>
+                            </div>
                     </div>
                 </div>
 
-                <!-- Footer Navigation inside Quiz -->
                 <div class="flex justify-between items-center border-t border-slate-100 pt-4 mt-6">
                     <button id="btn-quiz-prev" onclick="prevQuestion()" class="px-4 py-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold transition flex items-center gap-2">
                         <i class="fa-solid fa-arrow-left"></i> Sebelumnya
@@ -138,7 +117,6 @@
                 </div>
             </section>
 
-            <!-- SECTION 3: EXAM SUBMISSION SUCCESS -->
             <section id="view-siswa-success" class="app-view hidden p-8 flex-grow flex flex-col justify-center items-center text-center">
                 <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-4xl mb-6 shadow-inner animate-bounce">
                     <i class="fa-solid fa-check"></i>
@@ -157,7 +135,6 @@
                 </button>
             </section>
 
-            <!-- SECTION 4: GURU PASSWORD AUTHENTICATION -->
             <section id="view-guru-auth" class="app-view hidden p-8 flex-grow flex flex-col justify-center items-center">
                 <div class="w-full max-w-sm bg-slate-50 p-8 rounded-2xl border border-slate-200 shadow-sm">
                     <div class="text-center mb-6">
@@ -179,10 +156,8 @@
                 </div>
             </section>
 
-            <!-- SECTION 5: GURU DASHBOARD -->
             <section id="view-guru-dashboard" class="app-view hidden p-6 flex-grow flex flex-col justify-between overflow-y-auto">
                 <div>
-                    <!-- Dashboard Tabs -->
                     <div class="flex border-b border-slate-100 mb-6 gap-4 overflow-x-auto whitespace-nowrap pb-1">
                         <button onclick="switchTeacherTab('tab-rekap')" id="tab-btn-rekap" class="tab-btn px-4 py-2 border-b-2 border-teal-600 font-bold text-teal-600 text-sm flex items-center gap-2">
                             <i class="fa-solid fa-chart-line"></i> Rekap Nilai Siswa
@@ -198,7 +173,6 @@
                         </button>
                     </div>
 
-                    <!-- TAB 1: REKAP NILAI -->
                     <div id="tab-rekap" class="teacher-tab-content space-y-6">
                         <div class="flex justify-between items-center flex-wrap gap-2">
                             <div>
@@ -218,7 +192,6 @@
                             </div>
                         </div>
 
-                        <!-- Table -->
                         <div class="overflow-x-auto border border-slate-200 rounded-xl bg-slate-50">
                             <table class="min-w-full divide-y divide-slate-200 text-sm text-left">
                                 <thead class="bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider">
@@ -232,26 +205,21 @@
                                     </tr>
                                 </thead>
                                 <tbody id="rekap-nilai-table-body" class="divide-y divide-slate-100 text-slate-700 bg-white">
-                                    <!-- Dynamic records here -->
-                                </tbody>
+                                    </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- TAB 2: ATUR MAPEL SISWA -->
                     <div id="tab-siswa" class="teacher-tab-content hidden space-y-6">
                         <div>
                             <h3 class="text-lg font-bold text-slate-800">Atur Hak Akses & Tugas Ulangan 10 Siswa</h3>
                             <p class="text-xs text-slate-500">Centang atau hilangkan centang untuk menentukan mapel apa saja yang boleh dibuka oleh masing-masing siswa.</p>
                         </div>
 
-                        <!-- 10 Student Editor Grid -->
                         <div id="student-editor-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- JS will generate 10 card editors here -->
-                        </div>
+                            </div>
                     </div>
 
-                    <!-- TAB 3: ATUR BANK SOAL -->
                     <div id="tab-soal" class="teacher-tab-content hidden space-y-6">
                         <div class="flex justify-between items-center">
                             <div>
@@ -259,7 +227,7 @@
                                 <p class="text-xs text-slate-500">Ubah isi pertanyaan, opsi pilihan, dan kunci jawaban dari 6 mata pelajaran aktif.</p>
                             </div>
                             <div class="flex gap-2">
-                                <select id="select-active-quiz-edit" onchange="loadQuestionsToEditor()" class="p-2 border border-slate-200 rounded-lg text-xs bg-white focus:outline-none focus:ring-1 focus:ring-teal-500">
+                                <select id="select-active-quiz-edit" onchange="loadQuestionsToEditor()" class="p-2 border border-slate-200 rounded-lg text-xs bg-white focus:outline-none focus:ring-1 focus:ring-teal-500 bg-white">
                                     <option value="pancasila">Pancasila</option>
                                     <option value="indonesia">Bahasa Indonesia</option>
                                     <option value="matematika">Matematika</option>
@@ -270,13 +238,10 @@
                             </div>
                         </div>
 
-                        <!-- Question Editors Container -->
                         <div id="question-editor-list" class="space-y-4">
-                            <!-- Dynamic question form blocks generated here -->
-                        </div>
+                            </div>
                     </div>
 
-                    <!-- TAB 4: SINKRONISASI SPREADSHEET -->
                     <div id="tab-config" class="teacher-tab-content hidden space-y-6">
                         <div>
                             <h3 class="text-lg font-bold text-slate-800">Integrasi Cloud Google Spreadsheet</h3>
@@ -299,7 +264,6 @@
                             <h4 class="font-bold text-indigo-900 flex items-center gap-2"><i class="fa-solid fa-code-fork"></i> Kode Google Apps Script yang Digunakan</h4>
                             <p class="text-indigo-950 text-xs">Pastikan Apps Script Anda di Google Spreadsheet menggunakan template kode berikut ini (mendukung penulisan data dan pembacaan awan secara dua arah):</p>
 
-                            <!-- Copy Codebox -->
                             <div class="relative bg-slate-900 text-slate-100 p-4 rounded-lg font-mono text-xs overflow-x-auto border border-slate-800 max-h-[250px] mt-2">
                                 <button onclick="copyAppsScriptCode()" class="absolute top-2 right-2 px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 rounded text-[10px] font-semibold text-slate-300 transition uppercase tracking-wider flex items-center gap-1">
                                     <i class="fa-solid fa-copy"></i> Copy Script
@@ -370,7 +334,6 @@ function doGet(e) {
                     </div>
                 </div>
 
-                <!-- Footer Teacher Dashboard -->
                 <div class="flex justify-between items-center border-t border-slate-100 pt-4 mt-8 text-xs text-slate-400">
                     <p>Status Sinkronisasi: <span id="sync-status" class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> Siap Terkoneksi</span></p>
                     <button onclick="exitTeacherMode()" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-lg transition flex items-center gap-1.5">
@@ -381,26 +344,25 @@ function doGet(e) {
         </div>
     </main>
 
-    <!-- FOOTER OF THE PAGE -->
     <footer class="text-center py-4 text-xs text-slate-400 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row justify-center items-center gap-2">
         <p>&copy; 2026 SD Negeri Blubuk. Sangat Ringan & Ramah Kuota.</p>
         <span class="hidden sm:inline">&bull;</span>
         <p class="text-teal-600 font-bold hover:underline cursor-pointer" onclick="openTeacherAuth()">Kelola Sistem (Area Guru)</p>
     </footer>
 
-    <!-- JAVASCRIPT LOGIC SECTION -->
     <script>
-        const APP_STATE_KEY = "ulangan_harian_v2_state";
+        // PERBAIKAN CHROME: Menggunakan key v3 baru agar terhindar dari bentrokan cache local yang kosong
+        const APP_STATE_KEY = "ulangan_harian_v3_fresh";
         const DEFAULT_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbw2RE4mzngSyYwFSCHYnQoNFrG8KILcbELGEavEVR8YW47UmlRm4PgQsHxmU1mknTQu/exec";
 
-        // Chrome-Proof Storage Guard: Automatically falls back to system memory if Chrome blocks localStorage
+        // Chrome-Proof Storage Guard
         const SafeStorage = {
             memoryStore: {},
             getItem(key) {
                 try {
                     return localStorage.getItem(key);
                 } catch (e) {
-                    console.warn("Storage Guard Active: localStorage is blocked by Chrome security. Using memory store.");
+                    console.warn("Storage Guard Active: Using memory store.");
                     return this.memoryStore[key] || null;
                 }
             },
@@ -408,13 +370,13 @@ function doGet(e) {
                 try {
                     localStorage.setItem(key, value);
                 } catch (e) {
-                    console.warn("Storage Guard Active: Cannot write to localStorage. Saving to temporary memory.");
+                    console.warn("Storage Guard Active: Saving to temporary memory.");
                     this.memoryStore[key] = value;
                 }
             }
         };
 
-        // Predefined multiple-choice questions for each of the 6 subjects
+        // Predefined multiple-choice questions
         const DEFAULT_QUIZZES = {
             pancasila: {
                 title: "Pancasila",
@@ -484,7 +446,6 @@ function doGet(e) {
             }
         };
 
-        // Standard student database containing 10 students and their specific subjects
         const DEFAULT_STUDENTS = [
             { id: 1, name: "CITRA KANAYA PUJI RAHAYU", subjects: ["pancasila", "indonesia", "matematika", "ipas", "senirupa", "bahasajawa"] },
             { id: 2, name: "DIMAS AKMAL AZZAM", subjects: ["pancasila", "indonesia", "matematika", "ipas", "senirupa", "bahasajawa"] },
@@ -498,7 +459,6 @@ function doGet(e) {
             { id: 10, name: "YUMNA SHEPTI ANGGRAINI", subjects: ["pancasila", "indonesia", "matematika", "ipas", "bahasajawa"] }
         ];
 
-        // System configuration parameters
         let students = [];
         let quizzes = {};
         let rekapNilai = [];
@@ -506,34 +466,46 @@ function doGet(e) {
         let activeStudent = null;
         let activeQuizKey = "";
         let currentQuestionIndex = 0;
-        let studentAnswers = {}; // To store temporary quiz answers
+        let studentAnswers = {};
 
+        // PERBAIKAN TOTAL SINKRONISASI INITIALIZATION (CHROME-PROOF)
         window.onload = function() {
-            // Load state using Chrome-Proof storage guard
             const savedState = SafeStorage.getItem(APP_STATE_KEY);
             if (savedState) {
                 try {
                     const parsed = JSON.parse(savedState);
-                    students = parsed.students || DEFAULT_STUDENTS;
+                    // Validasi Ketat: Jika terdeteksi state kosong/korup dari sisa memory lama, paksa pakai draf default
+                    students = (parsed.students && parsed.students.length > 0) ? parsed.students : JSON.parse(JSON.stringify(DEFAULT_STUDENTS));
                     quizzes = parsed.quizzes || DEFAULT_QUIZZES;
                     rekapNilai = parsed.rekapNilai || [];
                     googleSheetsWebhook = parsed.googleSheetsWebhook || DEFAULT_WEBHOOK_URL;
                 } catch (e) {
-                    console.error("Failed to load local state. Bootstrapping defaults.", e);
+                    console.error("Gagal memuat local state. Bootstrapping defaults.", e);
                     loadDefaultState();
                 }
             } else {
                 loadDefaultState();
             }
 
-            // Sync webhook input value
-            document.getElementById("input-sheets-webhook").value = googleSheetsWebhook;
+            // Pastikan data tersinkronisasi kembali ke storage agar aman
+            saveStateToLocalStorage();
 
-            // Render current UI lists
+            // Pasang isi input webhook
+            try {
+                const webhookInput = document.getElementById("input-sheets-webhook");
+                if (webhookInput) webhookInput.value = googleSheetsWebhook;
+            } catch (err) { console.log(err); }
+
+            // Jalankan seluruh fungsi render UI utama secara berurutan
             renderStudentSelectionGrid();
             renderRekapNilaiTable();
-            renderStudentEditorList();
-            loadQuestionsToEditor();
+            
+            try {
+                renderStudentEditorList();
+                loadQuestionsToEditor();
+            } catch(err) {
+                console.warn("Chrome deferred side elements rendering", err);
+            }
         };
 
         function loadDefaultState() {
@@ -549,9 +521,9 @@ function doGet(e) {
             SafeStorage.setItem(APP_STATE_KEY, JSON.stringify(payload));
         }
 
-        // CUSTOM TOAST NOTIFICATIONS (Replaces browser alerts)
         function showToast(message, type = 'info') {
             const container = document.getElementById("toast-container");
+            if (!container) return;
             const toast = document.createElement("div");
             toast.className = `p-4 rounded-xl shadow-lg border text-xs sm:text-sm font-semibold flex items-center gap-2 pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0`;
             
@@ -570,32 +542,22 @@ function doGet(e) {
             }
 
             container.appendChild(toast);
-            
-            // Trigger animation
-            setTimeout(() => {
-                toast.classList.remove('translate-y-2', 'opacity-0');
-            }, 10);
-
-            // Auto dismiss after 3 seconds
+            setTimeout(() => { toast.classList.remove('translate-y-2', 'opacity-0'); }, 10);
             setTimeout(() => {
                 toast.classList.add('opacity-0');
-                setTimeout(() => {
-                    toast.remove();
-                }, 300);
+                setTimeout(() => { toast.remove(); }, 300);
             }, 3000);
         }
 
-        // VIEW CONTROLLER
         function switchView(viewId) {
-            document.querySelectorAll(".app-view").forEach(view => {
-                view.classList.add("hidden");
-            });
-            document.getElementById(`view-${viewId}`).classList.remove("hidden");
+            document.querySelectorAll(".app-view").forEach(view => { view.classList.add("hidden"); });
+            const activeView = document.getElementById(`view-${viewId}`);
+            if (activeView) activeView.classList.remove("hidden");
         }
 
-        // PORTAL SISWA: GENERATING LISTS
         function renderStudentSelectionGrid() {
             const grid = document.getElementById("student-grid");
+            if (!grid) return;
             grid.innerHTML = "";
 
             students.forEach((student, index) => {
@@ -623,6 +585,7 @@ function doGet(e) {
             document.getElementById("pilih-mapel-student-name").innerText = activeStudent.name;
             
             const container = document.getElementById("subject-selection-container");
+            if (!container) return;
             container.innerHTML = "";
 
             if (activeStudent.subjects.length === 0) {
@@ -654,11 +617,9 @@ function doGet(e) {
                     container.appendChild(card);
                 });
             }
-
             switchView("siswa-pilih-mapel");
         }
 
-        // SECTION 2: RUNNING THE ACTIVE EXAM
         function startQuiz(subjectKey) {
             activeQuizKey = subjectKey;
             currentQuestionIndex = 0;
@@ -683,16 +644,12 @@ function doGet(e) {
             const q = quiz.questions[index];
 
             document.getElementById("current-q-num").innerText = index + 1;
-            
-            // Calculate progress bar width
             const percentage = ((index + 1) / quiz.questions.length) * 100;
             document.getElementById("quiz-progress-bar").style.width = `${percentage}%`;
-
-            // Display question
             document.getElementById("question-text").innerText = `${index + 1}. ${q.text}`;
 
-            // Render options A, B, C, D
             const optionsContainer = document.getElementById("options-container");
+            if (!optionsContainer) return;
             optionsContainer.innerHTML = "";
 
             q.options.forEach(option => {
@@ -718,7 +675,6 @@ function doGet(e) {
                 optionsContainer.appendChild(optionBtn);
             });
 
-            // Adjust navigation buttons state
             const btnPrev = document.getElementById("btn-quiz-prev");
             const btnNext = document.getElementById("btn-quiz-next");
 
@@ -753,8 +709,6 @@ function doGet(e) {
 
         function nextQuestion() {
             const quiz = quizzes[activeQuizKey];
-            
-            // Check if student has answered current question
             const currentQuestionId = quiz.questions[currentQuestionIndex].id;
             if (!studentAnswers[currentQuestionId]) {
                 showToast("Pilihlah salah satu jawaban sebelum melanjutkan!", "warning");
@@ -765,12 +719,10 @@ function doGet(e) {
                 currentQuestionIndex++;
                 loadQuestion(currentQuestionIndex);
             } else {
-                // If this was the last question, process final submit
                 submitQuizAnswers();
             }
         }
 
-        // SUBMIT AND SEND TO SHEET (THE DEPLOY LOGIC)
         function submitQuizAnswers() {
             const quiz = quizzes[activeQuizKey];
             let correctCount = 0;
@@ -792,11 +744,8 @@ function doGet(e) {
 
             const score = Math.round((correctCount / quiz.questions.length) * 100);
             const wrongCount = quiz.questions.length - correctCount;
-            
-            // Generate simple string summary for the spreadsheet details column
             const simpleDetailText = detailAnswersArray.map(item => `S${item.soalId}: ${item.jawabanSiswa} (${item.status})`).join(", ");
 
-            // Create submission record
             const newRecord = {
                 timestamp: new Date().toLocaleString("id-ID"),
                 studentName: activeStudent.name,
@@ -809,56 +758,41 @@ function doGet(e) {
                 sentStatus: "Mencoba Mengirim..."
             };
 
-            // Write to cache using SafeStorage
             rekapNilai.push(newRecord);
             saveStateToLocalStorage();
             renderRekapNilaiTable();
 
-            // Render view-siswa-success with scores
             document.getElementById("success-score").innerText = score;
             document.getElementById("success-correct-count").innerText = correctCount;
             document.getElementById("success-total-count").innerText = quiz.questions.length;
             
             switchView("siswa-success");
 
-            // Celebrate!
             try {
-                confetti({
-                    particleCount: 150,
-                    spread: 80,
-                    origin: { y: 0.6 }
-                });
-            } catch(err) {
-                console.log("Confetti trigger bypassed");
-            }
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+            } catch(err) { console.log("Confetti trigger bypassed"); }
 
-            // TRIGGER SPREADSHEET DEPLOYMENT IMMEDIATELY!
             deployToSpreadsheet(newRecord);
         }
 
         function deployToSpreadsheet(record) {
             if (!googleSheetsWebhook || !googleSheetsWebhook.startsWith("http")) {
-                console.warn("Spreadsheet URL is not configured or invalid.");
                 updateLastRecordStatus("Gagal Kirim (URL Kosong)");
                 return;
             }
 
-            // Call POST connection directly (no-cors mode avoids preflight block issues)
             fetch(googleSheetsWebhook, {
                 method: "POST",
                 mode: "no-cors",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(record)
             })
             .then(() => {
-                // Success trigger (no-cors results in opaque response, meaning we assume success if no error is caught)
                 updateLastRecordStatus("Berhasil");
                 showToast("Hasil ulangan berhasil dikirim ke Google Spreadsheet!", "success");
             })
             .catch(error => {
-                console.error("Transmission Error to Spreadsheet", error);
+                console.error("Transmission Error", error);
                 updateLastRecordStatus("Gagal Kirim");
                 showToast("Ujian tersimpan lokal. Gagal menyambung ke Spreadsheet.", "error");
             });
@@ -872,16 +806,15 @@ function doGet(e) {
             }
         }
 
-        // GURU AUTHENTICATION SECTION
         function openTeacherAuth() {
             document.getElementById("input-guru-pw").value = "";
             switchView("guru-auth");
             document.getElementById("input-guru-pw").focus();
         }
 
+        // PASSWORD DIATUR HANYA GURU YANG TAHU & TIDAK DITULIS TERBUKA DI PORTAL
         function submitTeacherAuth() {
             const inputPw = document.getElementById("input-guru-pw").value;
-            // Password 'guru123' stays behind-the-scenes
             if (inputPw === "guru123") {
                 showToast("Akses diizinkan! Selamat datang, guru.", "success");
                 switchView("guru-dashboard");
@@ -891,17 +824,15 @@ function doGet(e) {
             }
         }
 
-        // GURU DASHBOARD: TABS CONTROLLER
         function switchTeacherTab(tabId) {
-            document.querySelectorAll(".teacher-tab-content").forEach(content => {
-                content.classList.add("hidden");
-            });
+            document.querySelectorAll(".teacher-tab-content").forEach(content => { content.classList.add("hidden"); });
             document.querySelectorAll(".tab-btn").forEach(btn => {
                 btn.classList.remove("border-teal-600", "text-teal-600");
                 btn.classList.add("border-transparent", "text-slate-500");
             });
 
-            document.getElementById(tabId).classList.remove("hidden");
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) targetTab.classList.remove("hidden");
             
             const btnMap = {
                 'tab-rekap': 'tab-btn-rekap',
@@ -911,8 +842,10 @@ function doGet(e) {
             };
             
             const activeBtn = document.getElementById(btnMap[tabId]);
-            activeBtn.classList.remove("border-transparent", "text-slate-500");
-            activeBtn.classList.add("border-teal-600", "text-teal-600");
+            if (activeBtn) {
+                activeBtn.classList.remove("border-transparent", "text-slate-500");
+                activeBtn.classList.add("border-teal-600", "text-teal-600");
+            }
         }
 
         function exitTeacherMode() {
@@ -920,9 +853,9 @@ function doGet(e) {
             showToast("Anda telah keluar dari dasbor guru.");
         }
 
-        // TAB 1: RENDERING REKAP NILAI TABLE
         function renderRekapNilaiTable() {
             const tbody = document.getElementById("rekap-nilai-table-body");
+            if (!tbody) return;
             tbody.innerHTML = "";
 
             if (rekapNilai.length === 0) {
@@ -937,9 +870,7 @@ function doGet(e) {
                 return;
             }
 
-            // Show latest scores first
             const sortedRecords = [...rekapNilai].reverse();
-
             sortedRecords.forEach(record => {
                 const tr = document.createElement("tr");
                 tr.className = "hover:bg-slate-50 border-b border-slate-100 transition duration-150 text-xs sm:text-sm";
@@ -965,7 +896,6 @@ function doGet(e) {
             });
         }
 
-        // PULL/GET SINKRONISASI AWAN DARI SPREADSHEET
         function pullDataFromSpreadsheet() {
             if (!googleSheetsWebhook || !googleSheetsWebhook.startsWith("http")) {
                 showToast("Tautan Google Sheets belum tersambung!", "error");
@@ -973,16 +903,15 @@ function doGet(e) {
             }
 
             const icon = document.getElementById("pull-icon");
-            icon.className = "fa-solid fa-circle-notch animate-spin";
+            if (icon) icon.className = "fa-solid fa-circle-notch animate-spin";
             showToast("Menghubungi cloud Google Sheets...");
 
             fetch(googleSheetsWebhook)
             .then(response => response.json())
             .then(result => {
-                icon.className = "fa-solid fa-cloud-arrow-down";
+                if (icon) icon.className = "fa-solid fa-cloud-arrow-down";
                 if (result.status === "success" && result.data) {
                     if (result.data.length > 0) {
-                        // Merge pulled records with local records to prevent duplicates
                         const parsedCloudRecords = result.data.map(item => ({
                             timestamp: item.timestamp,
                             studentName: item.studentName,
@@ -995,7 +924,6 @@ function doGet(e) {
                             sentStatus: "Berhasil"
                         }));
 
-                        // Filter uniques
                         const mergedList = [...rekapNilai];
                         parsedCloudRecords.forEach(cloudRecord => {
                             const duplicate = mergedList.some(local => 
@@ -1003,26 +931,24 @@ function doGet(e) {
                                 local.quizTitle === cloudRecord.quizTitle &&
                                 local.score === cloudRecord.score
                             );
-                            if (!duplicate) {
-                                mergedList.push(cloudRecord);
-                            }
+                            if (!duplicate) { mergedList.push(cloudRecord); }
                         });
 
                         rekapNilai = mergedList;
                         saveStateToLocalStorage();
                         renderRekapNilaiTable();
-                        showToast(`Sinkronisasi Berhasil! Memuat ${result.data.length} rekaman data dari Cloud.`, "success");
+                        showToast(`Sinkronisasi Berhasil! Memuat ${result.data.length} data.`, "success");
                     } else {
                         showToast("Spreadsheet terdeteksi kosong.");
                     }
                 } else {
-                    showToast("Gagal menarik data. Periksa pengaturan script Anda.", "error");
+                    showToast("Gagal menarik data. Periksa Apps Script Anda.", "error");
                 }
             })
             .catch(err => {
-                icon.className = "fa-solid fa-cloud-arrow-down";
+                if (icon) icon.className = "fa-solid fa-cloud-arrow-down";
                 console.error("Pull Failed", err);
-                showToast("Koneksi gagal. Cek status deployment script Anda.", "error");
+                showToast("Koneksi gagal. Cek status deployment web app.", "error");
             });
         }
 
@@ -1039,7 +965,6 @@ function doGet(e) {
                 showToast("Tidak ada rekaman data untuk diekspor!", "warning");
                 return;
             }
-
             let csvContent = "data:text/csv;charset=utf-8,";
             csvContent += "Tanggal Pengiriman,Nama Siswa,Mata Pelajaran,Benar,Total Soal,Skor Akhir,Status Kirim,Detail\r\n";
 
@@ -1060,16 +985,15 @@ function doGet(e) {
             showToast("Berkas CSV berhasil diunduh!", "success");
         }
 
-        // TAB 2: ATUR MAPEL SISWA
         function renderStudentEditorList() {
             const container = document.getElementById("student-editor-container");
+            if (!container) return;
             container.innerHTML = "";
 
             students.forEach(student => {
                 const card = document.createElement("div");
                 card.className = "p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between gap-3";
                 
-                // Render Checkboxes
                 const subjectKeys = Object.keys(quizzes);
                 let checkBoxesHtml = "";
                 
@@ -1101,42 +1025,37 @@ function doGet(e) {
             if (!student) return;
 
             const index = student.subjects.indexOf(subjectKey);
-            if (index > -1) {
-                student.subjects.splice(index, 1); // Remove
-            } else {
-                student.subjects.push(subjectKey); // Add
-            }
+            if (index > -1) { student.subjects.splice(index, 1); } 
+            else { student.subjects.push(subjectKey); }
 
             saveStateToLocalStorage();
             renderStudentSelectionGrid();
             renderStudentEditorList();
         }
 
-        // TAB 3: BANK SOAL MANAGEMENT
         function loadQuestionsToEditor() {
-            const selectedQuizKey = document.getElementById("select-active-quiz-edit").value;
+            const selector = document.getElementById("select-active-quiz-edit");
+            if (!selector) return;
+            const selectedQuizKey = selector.value;
             const quiz = quizzes[selectedQuizKey];
             const container = document.getElementById("question-editor-list");
+            if (!container || !quiz || !quiz.questions) return;
             container.innerHTML = "";
-
-            if (!quiz || !quiz.questions) return;
 
             quiz.questions.forEach((q, qIdx) => {
                 const block = document.createElement("div");
                 block.className = "p-5 bg-slate-50 border border-slate-200 rounded-xl space-y-4";
                 
-                // Options editing blocks
                 let optionsHtml = "";
                 q.options.forEach((opt, oIdx) => {
                     optionsHtml += `
                         <div class="flex items-center gap-2">
                             <span class="text-xs font-bold text-slate-400 w-4">${String.fromCharCode(65 + oIdx)}</span>
-                            <input type="text" id="edit-q-${q.id}-opt-${oIdx}" value="${opt}" onchange="saveQuestionEdit('${selectedQuizKey}', ${qIdx})" class="flex-grow p-2 text-xs rounded-lg border border-slate-200 focus:ring-1 focus:ring-teal-500 focus:outline-none bg-white">
+                            <input type="text" id="edit-q-${q.id}-opt-${oIdx}" value="${opt}" onchange="saveQuestionEdit('${selectedQuizKey}', ${qIdx})" class="flex-grow p-2 text-xs rounded-lg border border-slate-200 focus:ring-1 focus:ring-teal-500 bg-white">
                         </div>
                     `;
                 });
 
-                // Correct answer drop-down selector
                 let answerSelectorOptions = "";
                 q.options.forEach(opt => {
                     answerSelectorOptions += `<option value="${opt}" ${q.answer === opt ? 'selected' : ''}>${opt}</option>`;
@@ -1146,22 +1065,19 @@ function doGet(e) {
                     <div class="flex justify-between items-center border-b border-slate-200 pb-2">
                         <span class="text-xs font-black text-teal-700 uppercase">Pertanyaan Nomor ${qIdx + 1}</span>
                     </div>
-                    
                     <div class="space-y-1">
                         <label class="text-[10px] text-slate-400 font-bold uppercase">Deskripsi Teks Pertanyaan</label>
-                        <textarea id="edit-q-${q.id}-text" rows="2" onchange="saveQuestionEdit('${selectedQuizKey}', ${qIdx})" class="w-full p-2.5 text-xs sm:text-sm rounded-lg border border-slate-200 focus:ring-1 focus:ring-teal-500 focus:outline-none bg-white font-medium">${q.text}</textarea>
+                        <textarea id="edit-q-${q.id}-text" rows="2" onchange="saveQuestionEdit('${selectedQuizKey}', ${qIdx})" class="w-full p-2.5 text-xs sm:text-sm rounded-lg border border-slate-200 focus:ring-1 focus:ring-teal-500 bg-white font-medium">${q.text}</textarea>
                     </div>
-
                     <div class="space-y-1">
                         <label class="text-[10px] text-slate-400 font-bold uppercase">Pilihan Opsi Jawaban</label>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             ${optionsHtml}
                         </div>
                     </div>
-
                     <div class="flex items-center gap-3 pt-2">
                         <label class="text-xs font-bold text-slate-600">Kunci Jawaban Benar:</label>
-                        <select id="edit-q-${q.id}-ans" onchange="saveQuestionEdit('${selectedQuizKey}', ${qIdx})" class="p-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-teal-500 bg-white font-bold text-teal-700">
+                        <select id="edit-q-${q.id}-ans" onchange="saveQuestionEdit('${selectedQuizKey}', ${qIdx})" class="p-1.5 text-xs border border-slate-200 rounded-lg focus:ring-1 focus:ring-teal-500 bg-white font-bold text-teal-700">
                             ${answerSelectorOptions}
                         </select>
                     </div>
@@ -1174,35 +1090,25 @@ function doGet(e) {
             const quiz = quizzes[quizKey];
             const q = quiz.questions[qIndex];
 
-            // Capture updated texts
             const textVal = document.getElementById(`edit-q-${q.id}-text`).value;
             const opt0 = document.getElementById(`edit-q-${q.id}-opt-0`).value;
             const opt1 = document.getElementById(`edit-q-${q.id}-opt-1`).value;
             const opt2 = document.getElementById(`edit-q-${q.id}-opt-2`).value;
             const opt3 = document.getElementById(`edit-q-${q.id}-opt-3`).value;
             
-            // Build temporary array values for verification
             const oldAnswerIndex = q.options.indexOf(q.answer);
             const newOptions = [opt0, opt1, opt2, opt3];
-
-            // Re-render answer selector choices safely
             const ansSelect = document.getElementById(`edit-q-${q.id}-ans`);
             const ansVal = ansSelect.value;
 
-            // Apply updates
             q.text = textVal;
             q.options = newOptions;
             
-            // Auto update chosen key mapping if option values changed
-            if (newOptions.includes(ansVal)) {
-                q.answer = ansVal;
-            } else {
-                q.answer = newOptions[oldAnswerIndex] || opt0;
-            }
+            if (newOptions.includes(ansVal)) { q.answer = ansVal; } 
+            else { q.answer = newOptions[oldAnswerIndex] || opt0; }
 
             saveStateToLocalStorage();
             
-            // Fast reload selectors to ensure correctness
             const options = ansSelect.options;
             options.length = 0;
             newOptions.forEach(opt => {
@@ -1210,14 +1116,12 @@ function doGet(e) {
             });
         }
 
-        // TAB 4: CONFIGURING GOOGLE SPREADSHEET DESTINATIONS
         function saveGoogleSheetsWebhook() {
             const val = document.getElementById("input-sheets-webhook").value.trim();
             if (val && !val.startsWith("http")) {
                 showToast("Format URL Spreadsheet Web App salah!", "error");
                 return;
             }
-
             googleSheetsWebhook = val;
             saveStateToLocalStorage();
             showToast("Tautan integrasi berhasil diperbarui!", "success");
@@ -1225,15 +1129,12 @@ function doGet(e) {
 
         function copyAppsScriptCode() {
             const codeText = document.getElementById("code-apps-script").innerText;
-            
-            // Reliable fallback copying technique within frames
             const dummy = document.createElement("textarea");
             document.body.appendChild(dummy);
             dummy.value = codeText;
             dummy.select();
             document.execCommand("copy");
             document.body.removeChild(dummy);
-
             showToast("Script berhasil disalin ke clipboard!", "success");
         }
     </script>
