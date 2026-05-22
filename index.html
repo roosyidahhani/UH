@@ -351,8 +351,8 @@ function doGet(e) {
     </footer>
 
     <script>
-        // PERBAIKAN CHROME: Menggunakan key v3 baru agar terhindar dari bentrokan cache local yang kosong
-        const APP_STATE_KEY = "ulangan_harian_v3_fresh";
+        // SINKRONISASI UPDATE SOAL: Mengganti kunci versi menjadi v4_revised agar browser langsung mereset cache soal lama
+        const APP_STATE_KEY = "ulangan_harian_v4_revised";
         const DEFAULT_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbw2RE4mzngSyYwFSCHYnQoNFrG8KILcbELGEavEVR8YW47UmlRm4PgQsHxmU1mknTQu/exec";
 
         // Chrome-Proof Storage Guard
@@ -376,7 +376,7 @@ function doGet(e) {
             }
         };
 
-        // Predefined multiple-choice questions
+        // Bank Soal dengan revisi Pancasila, Bahasa Indonesia, & Bahasa Jawa
         const DEFAULT_QUIZZES = {
             pancasila: {
                 title: "Pancasila",
@@ -384,7 +384,7 @@ function doGet(e) {
                 questions: [
                     { id: 1, text: "Wilayah administratif pemerintahan di bawah tingkat provinsi yang dipimpin oleh seorang Bupati dinamakan...", options: ["Kabupaten", "Kota", "Kecamatan", "Kelurahan"], answer: "Kabupaten" },
                     { id: 2, text: "Negara Kesatuan Republik Indonesia (NKRI) dibagi atas beberapa daerah besar yang masing-masing dipimpin oleh Gubernur, yaitu...", options: ["Kecamatan", "Provinsi", "Kabupaten", "Kota Madya"], answer: "Provinsi" },
-                    { id: 3, text: "Wilayah kabupaten/kota sebenarnya merupakan bagian tidak terpisahkan dari wilayah...", options: ["Negara tetangga", "Provinsi sebagai bagian dari NKRI", "Benua Asia saja", "Hutan adat lokal"], answer: "Provinsi sebagai bagian dari NKRI" },
+                    { id: 3, text: "SD Negeri Blubuk merupakan sekolah yang terletak di Kapanewon...", options: ["Pengasih", "Kulon Progo", "Kokap", "Yogyakarta"], answer: "Pengasih" },
                     { id: 4, text: "Pimpinan daerah tertinggi yang memegang tanggung jawab kepemimpinan di tingkat Kota adalah...", options: ["Bupati", "Lurah", "Camat", "Wali Kota"], answer: "Wali Kota" },
                     { id: 5, text: "Mengapa kita harus bangga dan menjaga persatuan wilayah tempat tinggal kita dari tingkat terkecil hingga provinsi?", options: ["Sebab wilayah kita adalah bagian mutlak NKRI", "Sebab wilayah kita paling hebat sendiri", "Agar bisa memusuhi daerah lain", "Agar mendapat hadiah uang tunai"], answer: "Sebab wilayah kita adalah bagian mutlak NKRI" }
                 ]
@@ -393,11 +393,11 @@ function doGet(e) {
                 title: "Bahasa Indonesia",
                 icon: "fa-solid fa-book text-indigo-600",
                 questions: [
-                    { id: 1, text: "Manakah di bawah ini yang merupakan contoh kalimat kompleks (kalimat majemuk bertingkat)?", options: ["Ibu memasak nasi goreng di dapur pagi ini.", "Adik sedang bermain boneka barbie.", "Andi giat menulis cerpen ketika seisi rumah sedang tidur pulas.", "Budi dan Rudi pergi memancing ikan di sungai dekat rumah."], answer: "Andi giat menulis cerpen ketika seisi rumah sedang tidur pulas." },
+                    { id: 1, text: "Di bawah ini, manakah kalimat yang menggunakan kata bermakna konotatif?", options: ["Ibu membeli menggoreng ikan menggunakan minyak kelapa.", "Karena besar kepala, ia dijauhi oleh teman-teman di kelasnya.", "Kepala adik sangat besar.", "Kepala sekolah di tempatku adalah seorang perempuan."], answer: "Karena besar kepala, ia dijauhi oleh teman-teman di kelasnya." },
                     { id: 2, text: "Di dalam draf cerpen, kata yang bermakna 'denotatif' artinya adalah kata yang memiliki...", options: ["Makna kiasan atau tidak langsung", "Makna lugas atau makna kamus yang sebenarnya", "Makna berlawanan dengan realitas", "Makna rahasia yang tidak boleh ditulis"], answer: "Makna lugas atau makna kamus yang sebenarnya" },
                     { id: 3, text: "Perhatikan kalimat: 'Citra adalah bunga desa yang sangat ramah.' Kata 'bunga desa' dalam kutipan cerpen tersebut bermakna...", options: ["Konotatif (bermakna gadis tercantik)", "Denotatif (bermakna tanaman hias di desa)", "Asli (bermakna tumbuhan liar)", "Negatif (bermakna anak pemalas)"], answer: "Konotatif (bermakna gadis tercantik)" },
                     { id: 4, text: "Teks cerita pendek (cerpen) biasanya dikembangkan dari kerangka tulisan berdasarkan susunan...", options: ["Tema, tokoh, latar, alur, dan amanat", "Harga barang belanjaan harian", "Daftar hadir absensi siswa sekolah", "Cara membuat kue tradisional"], answer: "Tema, tokoh, latar, alur, dan amanat" },
-                    { id: 5, text: "Manakah kalimat di bawah ini yang menggunakan kata bermakna denotatif (makna sebenarnya)?", options: ["Toko roti itu gulung tikar akibat sepi pembeli.", "Adik menyiram bunga mawar merah yang mekar di pot halaman rumah.", "Dia dikenal sebagai anak berkepala batu di kelasnya.", "Siswa tersebut mencari muka di hadapan bapak guru baru."], answer: "Adik menyiram bunga mawar merah yang mekar di pot halaman rumah." }
+                    { id: 5, text: "Manakah kalimat di bawah ini yang menggunakan kata bermakna denotatif?", options: ["Toko roti itu gulung tikar akibat sepi pembeli.", "Adik menyiram bunga mawar merah yang mekar di pot halaman rumah.", "Dia dikenal sebagai anak berkepala batu di kelasnya.", "Siswa tersebut mencari muka di hadapan bapak guru baru."], answer: "Adik menyiram bunga mawar merah yang mekar di pot halaman rumah." }
                 ]
             },
             matematika: {
@@ -430,7 +430,7 @@ function doGet(e) {
                     { id: 2, text: "Manakah unsur dasar seni rupa yang paling dominan saat kita ingin menggambar ekspresi emosi sedih atau ceria lewat coretan tangan?", options: ["Tekstur dan berat bahan", "Garis, bentuk, dan warna pilihan", "Ruang hampa udara", "Titik koordinat komputer"], answer: "Garis, bentuk, dan warna pilihan" },
                     { id: 3, text: "Karya seni rupa dua dimensi memiliki karakteristik utama yaitu...", options: ["Dapat dinikmati dari segala arah depan belakang samping", "Hanya memiliki ukuran panjang dan lebar saja", "Memiliki volume dan rongga isi", "Hanya bisa dibuat menggunakan cat minyak saja"], answer: "Hanya memiliki ukuran panjang dan lebar saja" },
                     { id: 4, text: "Saat seseorang melukis hobi kesukaannya (seperti bermain sepak bola atau memasak), maka karya lukisannya mencerminkan...", options: ["Minat personal dan luapan pengalaman pribadinya", "Peta geografi suatu wilayah tertentu", "Nilai inflasi ekonomi negara", "Hasil kalkulasi matematika murni"], answer: "Minat personal dan luapan pengalaman pribadinya" },
-                    { id: 5, text: "Peralatan menggambar paling sederhana yang digunakan untuk membuat sketsa garis bayangan kasar sebelum melukis adalah...", options: ["Kanvas linen", "Pensil hitam", "Kuas bulu kuda", "Pahat besi"], answer: "Pensil hitam" }
+                    { id: 5, text: "Peralatan menggambar paling sederhana yang digunakan untuk membuat sketsa garis bayangan kasar sebelum melukis Grandma adalah...", options: ["Kanvas linen", "Pensil hitam", "Kuas bulu kuda", "Pahat besi"], answer: "Pensil hitam" }
                 ]
             },
             bahasajawa: {
@@ -440,7 +440,7 @@ function doGet(e) {
                     { id: 1, text: "Nalika guneman karo wong tuwa utawa bapak ibu guru, awake dhewe kudu nggunakake basa...", options: ["Ngoko Lugu", "Ngoko Alus", "Krama Alus (Inggil)", "Basa Gaul"], answer: "Krama Alus (Inggil)" },
                     { id: 2, text: "Tembung 'mangan' yen diowahi dadi krama alus (inggil) sing bener yaiku...", options: ["Nedha", "Dhahar", "Sare", "Tindak"], answer: "Dhahar" },
                     { id: 3, text: "Paribasan 'Anak polah bapa...' trep karo terusan tembung...", options: ["Kepradhan", "Kajaba", "Krama", "Nelangsa"], answer: "Kepradhan" },
-                    { id: 4, text: "Aksara Jawa sing unine 'ha, na, ca, ra, ka' cacahe ana pira ing baris kapisan?", options: ["4 aksara", "5 aksara", "6 aksara", "10 aksara"], answer: "5 aksara" },
+                    { id: 4, text: "Cacahe gatra (larik) saben sapada (sebait) ing tembang Mijil ana...", options: ["4 gatra", "5 gatra", "6 gatra", "7 gatra"], answer: "6 gatra" },
                     { id: 5, text: "Pranata adicara yaiku wong sing tugase dadi...", options: ["Sing maca geguritan", "Sing nggawa sajèn", "MC utawa sing nuntun lakune adicara (acara)", "Sing nabuh gamelan"], answer: "MC utawa sing nuntun lakune adicara (acara)" }
                 ]
             }
@@ -468,13 +468,11 @@ function doGet(e) {
         let currentQuestionIndex = 0;
         let studentAnswers = {};
 
-        // PERBAIKAN TOTAL SINKRONISASI INITIALIZATION (CHROME-PROOF)
         window.onload = function() {
             const savedState = SafeStorage.getItem(APP_STATE_KEY);
             if (savedState) {
                 try {
                     const parsed = JSON.parse(savedState);
-                    // Validasi Ketat: Jika terdeteksi state kosong/korup dari sisa memory lama, paksa pakai draf default
                     students = (parsed.students && parsed.students.length > 0) ? parsed.students : JSON.parse(JSON.stringify(DEFAULT_STUDENTS));
                     quizzes = parsed.quizzes || DEFAULT_QUIZZES;
                     rekapNilai = parsed.rekapNilai || [];
@@ -487,16 +485,13 @@ function doGet(e) {
                 loadDefaultState();
             }
 
-            // Pastikan data tersinkronisasi kembali ke storage agar aman
             saveStateToLocalStorage();
 
-            // Pasang isi input webhook
             try {
                 const webhookInput = document.getElementById("input-sheets-webhook");
                 if (webhookInput) webhookInput.value = googleSheetsWebhook;
             } catch (err) { console.log(err); }
 
-            // Jalankan seluruh fungsi render UI utama secara berurutan
             renderStudentSelectionGrid();
             renderRekapNilaiTable();
             
@@ -812,7 +807,6 @@ function doGet(e) {
             document.getElementById("input-guru-pw").focus();
         }
 
-        // PASSWORD DIATUR HANYA GURU YANG TAHU & TIDAK DITULIS TERBUKA DI PORTAL
         function submitTeacherAuth() {
             const inputPw = document.getElementById("input-guru-pw").value;
             if (inputPw === "guru123") {
